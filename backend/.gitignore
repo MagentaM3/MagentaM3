@@ -1,0 +1,9 @@
+node_modules
+
+*.env
+
+dist
+
+src/db/migrations
+
+*.log
