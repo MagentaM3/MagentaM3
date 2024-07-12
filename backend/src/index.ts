@@ -18,9 +18,18 @@ app.use(cors(corsOptions));
 
 
 app.get("/echo", (req, res) => {
-  res.send("echo");
+  res.send("");
 });
 
+// change below however you want, just want to test Spotify API
+app.get(
+  '/playlists',
+  (req, res, next) => {
+    void (async () => {
+			// TODO implement a Spotify API call
+    })();
+  },
+);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(
