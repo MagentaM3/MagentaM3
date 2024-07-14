@@ -1,8 +1,10 @@
-import express from 'express';
+import * as trpcExpress from '@trpc/server/adapters/express';
 import cors from 'cors';
-
+import express from 'express';
+import { renderTrpcPanel } from 'trpc-panel';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
+import { appRouter } from './routers/_app';
 
 const LM = new LogModule('INDEX');
 
@@ -16,20 +18,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
-app.get("/echo", (req, res) => {
-  res.send("");
-});
-
 // change below however you want, just want to test Spotify API
-app.get(
-  '/playlists',
-  (req, res, next) => {
-    void (async () => {
-			// TODO implement a Spotify API call
-    })();
-  },
-);
+app.get('/playlists', () => {
+  void (async () => {
+    // TODO implement a Spotify API call
+  })();
+});
 
 app.use(express.json({ limit: '50mb' }));
 app.use(
@@ -39,8 +33,19 @@ app.use(
   }),
 );
 
+app.use(
+  '/trpc',
+  trpcExpress.createExpressMiddleware({
+    router: appRouter,
+  }),
+);
+
+app.use('/panel', (_, res) => {
+  return res.send(renderTrpcPanel(appRouter, { url: 'http://localhost:8000/trpc' }));
+});
+
 const port = env.SERVER_PORT;
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
   Logger.Info(LM, `Server is running on PORT=${port}`);
 });

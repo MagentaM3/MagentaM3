@@ -66,8 +66,7 @@ export class Logger {
     };
 
     const format = winston.format.printf(
-      ({ level, message, logModule, timestamp }) =>
-        `${timestamp} [${level}] [${logModule}] ${message}`,
+      ({ level, message, logModule, timestamp }) => `${timestamp} [${level}] [${logModule}] ${message}`,
     );
 
     const logger = winston.createLogger({
