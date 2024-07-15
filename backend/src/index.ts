@@ -2,6 +2,7 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import cors from 'cors';
 import express from 'express';
 import { renderTrpcPanel } from 'trpc-panel';
+import { seedDB } from './db/seed';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 import { appRouter } from './routers/_app';
@@ -41,11 +42,12 @@ app.use(
 );
 
 app.use('/panel', (_, res) => {
-  return res.send(renderTrpcPanel(appRouter, { url: 'http://localhost:8000/trpc' }));
+  return res.send(renderTrpcPanel(appRouter, { url: 'http://localhost:8080/trpc' }));
 });
 
 const port = env.SERVER_PORT;
 
-app.listen(port, () => {
+app.listen(port, async () => {
   Logger.Info(LM, `Server is running on PORT=${port}`);
+	await seedDB();
 });
