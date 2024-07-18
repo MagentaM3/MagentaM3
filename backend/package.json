@@ -5,10 +5,6 @@
   "scripts": {
     "build": "tsc --incremental",
     "start": "npm run build && node ./dist/index.js",
-<<<<<<< HEAD
-    "dev": "nodemon src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
-=======
     "dev": "npm run drizzle:generate --config=./src/db && npm run drizzle:migrate && nodemon src/index.ts",
     "test": "npm run drizzle:generate && npm run drizzle:migrate && cross-env NODE_ENV=development jest tests/*.test.ts --runInBand --forceExit",
     "lint": "eslint './src/**/*.ts' --fix",
@@ -18,7 +14,6 @@
     "drizzle:generate": "npx drizzle-kit generate --config=src/db/drizzle.config.ts",
     "drizzle:migrate": "ts-node src/db/migrate",
     "drizzle:studio": "npx drizzle-kit studio --config=src/db/drizzle.config.ts"
->>>>>>> main
   },
   "author": "",
   "license": "ISC",
