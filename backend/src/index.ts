@@ -4,6 +4,10 @@ import cors from 'cors';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 
+const clientId = env.SPOTIFY_CLIENT_ID;
+const clientSecret = env.SPOTIFY_CLIENT_SECRET;
+const redirectUri = env.SPOTIFY_REDIRECT_URI;
+
 const LM = new LogModule('INDEX');
 
 const app = express();

@@ -8,6 +8,9 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(['development', 'production']),
     SERVER_PORT: z.coerce.number(),
+    SPOTIFY_CLIENT_ID: z.string(),
+    SPOTIFY_CLIENT_SECRET: z.string(),
+    SPOTIFY_REDIRECT_URI: z.string()
   },
   runtimeEnv: process.env,
 });
