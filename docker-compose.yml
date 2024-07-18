@@ -1,0 +1,39 @@
+services:
+  server:
+    build:
+      dockerfile: dev.dockerfile
+      context: ./backend
+    restart: always
+    ports:
+      - 8080:8080
+      - 4983:4983
+    expose:
+      - 8080
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/nodemon.json:/app/nodemon.json
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - SERVER_PORT=${SERVER_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+  db:
+    image: postgres:14.7-alpine
+    restart: always
+    ports:
+      - 5433:5432
+    volumes:
+      - db-data:/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+volumes:
+  db-data: {}
