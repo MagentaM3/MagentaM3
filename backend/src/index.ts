@@ -1,3 +1,4 @@
+import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import * as trpcExpress from '@trpc/server/adapters/express';
 import cors from 'cors';
 import express from 'express';
@@ -9,7 +10,7 @@ import { appRouter } from './routers/_app';
 
 const clientId = env.SPOTIFY_CLIENT_ID;
 const clientSecret = env.SPOTIFY_CLIENT_SECRET;
-const redirectUri = env.SPOTIFY_REDIRECT_URI;
+// const redirectUri = env.SPOTIFY_REDIRECT_URI;
 
 // const searchSpotify = async () => {
 
@@ -30,31 +31,31 @@ const redirectUri = env.SPOTIFY_REDIRECT_URI;
 //   }
 // };
 
-// const searchSpotify = async () => {
+const searchSpotify = async () => {
 
-//   console.log("Searching Spotify for The Beatles...");
+  console.log("Searching Spotify for The Beatles...");
 
-//   const api = SpotifyApi.withClientCredentials(
-//     clientId,
-//     clientSecret
-//   );
+  const api = SpotifyApi.withClientCredentials(
+    clientId,
+    clientSecret
+  );
 
-//   const items = await api.search("The Beatles", ["artist"]);
+  const items = await api.search("Frank", ["artist"]);
 
-//   console.table(items.artists.items.map((item) => ({
-//     name: item.name,
-//     followers: item.followers.total,
-//     popularity: item.popularity,
-//   })));
+  console.table(items.artists.items.map((item) => ({
+    name: item.name,
+    followers: item.followers.total,
+    popularity: item.popularity,
+  })));
 
-// };
+};
 
 
-// const main = () => {
-//   searchSpotify().catch(error => console.error(error));
-// };
+const main = () => {
+  searchSpotify().catch(error => console.error(error));
+};
 
-// main();
+main();
 
 
 const LM = new LogModule('INDEX');
