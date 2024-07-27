@@ -1,23 +1,20 @@
-import logo from './logo.svg';
+import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 import './App.css';
 
 function App() {
+	const handleClick = () => {
+		const res = SpotifyApi.performUserAuthorization(
+			process.env.REACT_APP_SPOTIFY_CLIENT_ID, 
+			process.env.REACT_APP_SPOTIFY_REDIRECT_URI, 
+			['user-read-private', 'user-read-email'],
+			'http://localhost:8888/login');
+		console.log(res);
+		console.log("HELLO");
+	}
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div onClick={handleClick}>CLICK ME</div>
     </div>
   );
 }
