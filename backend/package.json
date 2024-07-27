@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@spotify/web-api-ts-sdk": "^1.2.0",
     "@t3-oss/env-core": "^0.6.1",
     "@trpc/server": "^10.45.2",
     "cors": "^2.8.5",
