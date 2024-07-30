@@ -1,4 +1,4 @@
-import { AccessToken, SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { AccessToken } from '@spotify/web-api-ts-sdk';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -11,12 +11,14 @@ import { seedDB } from './db/seed';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 import { appRouter } from './routers/_app';
+import { SpotifyService } from './spotifyAPI';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
 const clientSecret: string = env.SPOTIFY_CLIENT_SECRET;
 const redirectUri: string = env.SPOTIFY_REDIRECT_URI;
 const port: number = env.SERVER_PORT;
 
+// Maybe move this to helper file?
 const generateRandomString = (length: number): string => {
   return crypto
     .randomBytes(60)
@@ -84,10 +86,10 @@ app.get('/callback', (req: Request, res: Response) => {
         // expires?:
       }
 
-      const api = SpotifyApi.withAccessToken(clientId, accessToken);
-      // move this to spotifyAPI.ts 
-      console.log(await api.currentUser.profile())
+      const spotifyProfileService = new SpotifyService(clientId, accessToken);
+      const curUser = await spotifyProfileService.getCurrentUserProfile();
 
+      console.log(curUser);
     }
   });
   res.json({
