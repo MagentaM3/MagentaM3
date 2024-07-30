@@ -1,20 +1,30 @@
 import { AccessToken, SpotifyApi } from '@spotify/web-api-ts-sdk';
+// import axios from 'axios';
 
-export class SpotifyService {
-    private clientId: string;
-    private accessToken: AccessToken;
+export const api = (clientId: string, accessToken: AccessToken): SpotifyApi => {
+    return SpotifyApi.withAccessToken(clientId, accessToken);
+};
 
-    // Constructor for SpotifyService (I think we only need clientId and Access
-    // token to do everything?)
-    constructor(clientId: string, accessToken: AccessToken) {
-        this.clientId = clientId;
-        this.accessToken = accessToken;
-    }
+export const getCurrentUserProfile = async (clientId: string, accessToken: AccessToken): Promise<string> => {
 
-    // Get user profile
-    public async getCurrentUserProfile(): Promise<string> {
-        const api = SpotifyApi.withAccessToken(this.clientId, this.accessToken);
-        const profile = await api.currentUser.profile();
-        return JSON.stringify(profile);
-    }
-}
+    const profile = await api(clientId, accessToken).currentUser.profile();
+
+    console.log(profile)
+    return JSON.stringify(profile)
+};
+
+export const getCurrentUserPlaylists = async (clientId: string, accessToken: AccessToken): Promise<string> => {
+
+    const playlists = await api(clientId, accessToken).currentUser.playlists.playlists();
+
+    console.log(playlists)
+    return JSON.stringify(playlists)
+};
+
+// export const getPlaylistItems = async (clientId: string, accessToken: AccessToken): Promise<string> => {
+
+//     const profile = await api(clientId, accessToken).currentUser.playlists.playlists();
+
+//     console.log(profile)
+//     return JSON.stringify(profile)
+// };
