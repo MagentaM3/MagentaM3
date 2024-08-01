@@ -21,10 +21,10 @@ export const getCurrentUserPlaylists = async (clientId: string, accessToken: Acc
     return JSON.stringify(playlists)
 };
 
-// export const getPlaylistItems = async (clientId: string, accessToken: AccessToken): Promise<string> => {
+export const getPlaylistItems = async (clientId: string, accessToken: AccessToken, playlistId: string): Promise<string> => {
 
-//     const profile = await api(clientId, accessToken).currentUser.playlists.playlists();
+    const playlistItems = await api(clientId, accessToken).playlists.getPlaylistItems(playlistId);
 
-//     console.log(profile)
-//     return JSON.stringify(profile)
-// };
+    console.log(playlistItems)
+    return JSON.stringify(playlistItems)
+};

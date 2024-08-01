@@ -11,7 +11,11 @@ import { seedDB } from './db/seed';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 import { appRouter } from './routers/_app';
-import { getCurrentUserPlaylists, getCurrentUserProfile } from './spotifyAPI';
+import {
+  getCurrentUserPlaylists,
+  getCurrentUserProfile,
+  getPlaylistItems
+} from './spotifyAPI';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
 const clientSecret: string = env.SPOTIFY_CLIENT_SECRET;
@@ -88,6 +92,7 @@ app.get('/callback', (req: Request, res: Response) => {
 
       const curUser = await getCurrentUserProfile(clientId, accessToken);
       const playlists = await getCurrentUserPlaylists(clientId, accessToken);
+      const playlistItems = await getPlaylistItems(clientId, accessToken, "6TQ5jTvSWkZ3fgcjmZ3zcK");
 
       console.log(curUser);
     }
