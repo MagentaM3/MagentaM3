@@ -22,7 +22,6 @@ const clientSecret: string = env.SPOTIFY_CLIENT_SECRET;
 const redirectUri: string = env.SPOTIFY_REDIRECT_URI;
 const port: number = env.SERVER_PORT;
 
-// Maybe move this to helper file?
 const generateRandomString = (length: number): string => {
   return crypto
     .randomBytes(60)
