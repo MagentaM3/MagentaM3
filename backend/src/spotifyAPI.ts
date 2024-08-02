@@ -1,54 +1,30 @@
-// import { SpotifyWebApi } from '@spotify/web-api-ts-sdk';
+import { AccessToken, SpotifyApi } from '@spotify/web-api-ts-sdk';
 // import axios from 'axios';
-// import { env } from './env';
 
-// // Choose one of the following:
-// const sdk = SpotifyWebApi.withUserAuthorization("client-id", "https://localhost:3000", ["scope1", "scope2"]);
-// // const sdk = SpotifyWebApi.withClientCredentials("client-id", "secret", ["scope1", "scope2"]);
+export const api = (clientId: string, accessToken: AccessToken): SpotifyApi => {
+    return SpotifyApi.withAccessToken(clientId, accessToken);
+};
 
-// var artistID = "2h93pZq0e7k5yf4dywlkpM?si=ZiVZaMTOQuK9ys9S_wXFEw";
+export const getCurrentUserProfile = async (clientId: string, accessToken: AccessToken): Promise<string> => {
 
-// const getSpotifyToken = async (): Promise<string> => {
-//     const clientId = env.SPOTIFY_CLIENT_ID;
-//     const clientSecret = env.SPOTIFY_CLIENT_SECRET;
-//     const tokenUrl = env.SPOTIFY_REDIRECT_URI;
+    const profile = await api(clientId, accessToken).currentUser.profile();
 
-//     const response = await axios.post(
-//         tokenUrl,
-//         'grant_type=client_credentials',
-//         {
-//             headers: {
-//                 'Content-Type': 'application/x-www-form-urlencoded',
-//                 'Authorization': `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`
-//             }
-//         }
-//     );
+    console.log(profile)
+    return JSON.stringify(profile)
+};
 
-//     return response.data.access_token;
-// };
+export const getCurrentUserPlaylists = async (clientId: string, accessToken: AccessToken): Promise<string> => {
 
-// const getArtistData = async (token: string, artistId: string) => {
-//     const artistUrl = `https://api.spotify.com/v1/artists/${artistId}`;
+    const playlists = await api(clientId, accessToken).currentUser.playlists.playlists();
 
-//     const response = await axios.get(artistUrl, {
-//         headers: {
-//             'Authorization': `Bearer ${token}`
-//         }
-//     });
+    console.log(playlists)
+    return JSON.stringify(playlists)
+};
 
-//     return response.data;
-// };
+export const getPlaylistItems = async (clientId: string, accessToken: AccessToken, playlistId: string): Promise<string> => {
 
-// const main = async () => {
-//     try {
-//         const token = await getSpotifyToken();
-//         const artistId = 'YOUR_ARTIST_ID'; // Replace with the artist ID you want to get data for
-//         const artistData = await getArtistData(token, artistId);
+    const playlistItems = await api(clientId, accessToken).playlists.getPlaylistItems(playlistId);
 
-//         console.log(artistData);
-//     } catch (error) {
-//         console.error('Error fetching artist data:', error);
-//     }
-// };
-
-// main();
+    console.log(playlistItems)
+    return JSON.stringify(playlistItems)
+};

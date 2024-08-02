@@ -1,3 +1,4 @@
+import { AccessToken } from '@spotify/web-api-ts-sdk';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -10,6 +11,11 @@ import { seedDB } from './db/seed';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 import { appRouter } from './routers/_app';
+import {
+  getCurrentUserPlaylists,
+  getCurrentUserProfile,
+  getPlaylistItems
+} from './spotifyAPI';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
 const clientSecret: string = env.SPOTIFY_CLIENT_SECRET;
@@ -54,63 +60,47 @@ app.get('/login', (req: Request, res: Response) => {
 });
 
 app.get('/callback', (req: Request, res: Response) => {
+  console.log("callback called")
   const code = req.query.code || null;
-  const state = req.query.state || null;
-  const storedState = req.cookies ? req.cookies[stateKey] : null;
 
-  console.log(`Received state: ${state}`);
-  console.log(`Stored state: ${storedState}`);
+  res.clearCookie(stateKey);
+  const authOptions = {
+    url: 'https://accounts.spotify.com/api/token',
+    form: {
+      code: code,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code'
+    },
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + (Buffer.from(clientId + ':' + clientSecret).toString('base64'))
+    },
+    json: true
+  };
 
-  if (state === null || state !== storedState) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
-  } else {
-    res.clearCookie(stateKey);
-    const authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: redirectUri,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-        Authorization: 'Basic ' + (Buffer.from(clientId + ':' + clientSecret).toString('base64'))
-      },
-      json: true
-    };
+  request.post(authOptions, async (error: any, response: request.Response, body: any) => {
 
-    request.post(authOptions, (error: any, response: request.Response, body: any) => {
-      if (!error && response.statusCode === 200) {
-        const access_token = body.access_token,
-          refresh_token = body.refresh_token;
-
-        const options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { Authorization: 'Bearer ' + access_token },
-          json: true
-        };
-
-        request.get(options, (error: any, response: request.Response, body: any) => {
-          console.log(body);
-        });
-
-        res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));
-      } else {
-        res.redirect('/#' +
-          querystring.stringify({
-            error: 'invalid_token'
-          }));
+    if (!error && response.statusCode === 200) {
+      const accessToken: AccessToken = {
+        access_token: body.access_token,
+        token_type: body.token_type,
+        expires_in: body.expires_in,
+        refresh_token: body.refresh_token,
+        // expires?:
       }
-    });
-  }
+
+      const curUser = await getCurrentUserProfile(clientId, accessToken);
+      const playlists = await getCurrentUserPlaylists(clientId, accessToken);
+      const playlistItems = await getPlaylistItems(clientId, accessToken, "6TQ5jTvSWkZ3fgcjmZ3zcK");
+
+      console.log(curUser);
+    }
+  });
+  res.json({
+    hello: "yo"
+  })
 });
+
 
 app.get('/refresh_token', (req: Request, res: Response) => {
   const refresh_token = req.query.refresh_token;
