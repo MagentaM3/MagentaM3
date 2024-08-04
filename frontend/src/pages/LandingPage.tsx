@@ -1,41 +1,38 @@
-import car from '@/assets/magentam3.jpg';
-import { SpotifyApi } from '@spotify/web-api-ts-sdk';
+import car from '../assets/magentam3.jpg';
 
-const LandingPage = () => {
+export const LandingPage = () => {
 
 	const handleClick = async () => {
-		const scopes = ['user-read-private', 'user-read-email']
-		// this is the backend url that is posted the access token :) 
-		const postbackUrl = 'http://localhost:8888/login';
+		const scope = 'user-read-private user-read-email';
+		const authUrl = new URL("https://accounts.spotify.com/authorize")
 
-		const res = await SpotifyApi.performUserAuthorization(
-			import.meta.env.VITE_SPOTIFY_CLIENT_ID ?? "", 
-			// please change below to like 'http://localhost:5173/callback'
-			import.meta.env.VITE_SPOTIFY_REDIRECT_URI ?? "", 
-			scopes, postbackUrl
-		);
+		const params = {
+			client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID ?? "",
+			redirect_uri: import.meta.env.VITE_SPOTIFY_REDIRECT_URI ?? "",
+			response_type: 'code',
+			scope: scope,
+		}
 
-		console.log(res);
+		authUrl.search = new URLSearchParams(params).toString();
+		window.open(authUrl.toString());
 	}
 
-  return (
-    <>
+	return (
+		<>
 			<div className='flex flex-row m-10'>
 				<div className='flex flex-col'>
 					<h1 className='text-8xl font-bold font-sans'>The best way to manage your playlists</h1>
 					<div className='w-full flex'>
-						<button 
+						<button
 							className='bg-green-600 p-4 text-white rounded m-auto justify-around mt-10 text-2xl'
 							onClick={handleClick}
 						>
-								Login to Spotify
+							Login to Spotify
 						</button>
 					</div>
 				</div>
-				<img src={car} width={700}/>
+				<img src={car} width={700} />
 			</div>
 		</>
-  );
+	);
 };
-
-export default LandingPage;

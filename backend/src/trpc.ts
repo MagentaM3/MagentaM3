@@ -1,15 +1,44 @@
-import { initTRPC } from '@trpc/server';
-import { Context } from './context';
+import { inferAsyncReturnType, initTRPC, TRPCError } from "@trpc/server";
+import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import { SuperJSON } from "superjson";
+import { ZodError } from "zod";
 
-/**
- * Initialization of tRPC backend
- * Should be done only once per backend!
- */
-const t = initTRPC.context<Context>().create({ errorFormatter: undefined });
+export const createContext = async ({ req, res }: CreateExpressContextOptions) => {
+	return {
+		session: req.session,
+		req,
+		res,
+	};
+};
 
-/**
- * Export reusable router and procedure helpers
- * that can be used throughout the router
- */
-export const router = t.router;
+type Context = inferAsyncReturnType<typeof createContext>;
+
+const t = initTRPC.context<Context>().create({
+  transformer: SuperJSON,
+  errorFormatter({ shape, error }) {
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
+    };
+  },
+});
+
+export const createTRPCRouter = t.router;
+
 export const publicProcedure = t.procedure;
+
+export const protectedProcedure = t.procedure
+  .use(({ ctx, next }) => {
+    if (!ctx.session || !ctx.session.accessToken) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next({
+      ctx: {
+        session: { ...ctx.session, accessToken: ctx.session.accessToken },
+      },
+    });
+  });

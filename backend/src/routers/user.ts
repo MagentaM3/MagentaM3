@@ -1,10 +1,12 @@
 import z from 'zod';
 import { db } from '../db/connection';
 import { users } from '../db/schema/user';
-import { publicProcedure, router } from '../trpc';
+import { syncSpotifyData } from '../services/spotify';
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 import { User } from '../types/user';
 
-export const userRouter = router({
+export const userRouter = createTRPCRouter({
+	// TODO: update or remove following route
   user: publicProcedure
     .input(z.void())
     .output(User)
@@ -12,4 +14,9 @@ export const userRouter = router({
 			const result = await db.select().from(users);
       return result[0];
     }),
+	syncSpotifyData: protectedProcedure
+		.mutation(({ ctx }) => {
+			// use your ORM of choice
+			syncSpotifyData(ctx.session.accessToken);
+		}),
 });
