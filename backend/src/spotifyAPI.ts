@@ -23,7 +23,7 @@ export const getCurrentUserPlaylists = async (clientId: string, accessToken: Acc
 
 export const getPlaylistItems = async (clientId: string, accessToken: AccessToken, playlistId: string): Promise<string> => {
 
-    const playlistItems = await api(clientId, accessToken).playlists.getPlaylistItems(playlistId);
+    const playlistItems = (await api(clientId, accessToken).playlists.getPlaylistItems(playlistId)).items;
 
     console.log(playlistItems)
     return JSON.stringify(playlistItems)

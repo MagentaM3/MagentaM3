@@ -94,7 +94,7 @@ app.get('/callback', (req: Request, res: Response) => {
       const playlists = await getCurrentUserPlaylists(clientId, accessToken);
       const playlistItems = await getPlaylistItems(clientId, accessToken, "6TQ5jTvSWkZ3fgcjmZ3zcK");
 
-      console.log(curUser);
+      // console.log(curUser);
     }
   });
   res.json({
