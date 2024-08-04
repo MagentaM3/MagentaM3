@@ -16,6 +16,7 @@ const clientId: string = env.SPOTIFY_CLIENT_ID;
 const clientSecret: string = env.SPOTIFY_CLIENT_SECRET;
 const redirectUri: string = env.SPOTIFY_REDIRECT_URI;
 const port: number = env.SERVER_PORT;
+const clientUrl: string = env.CLIENT_URL;
 
 declare module 'express-session' {
   interface SessionData {
@@ -33,7 +34,7 @@ app.use(session({
 }));
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: clientUrl,
   credentials: true,
   optionSuccessStatus: 200,
 };
@@ -63,7 +64,7 @@ app.get('/callback', (req: Request, res: Response) => {
   request.post(authOptions, async (error: any, response: request.Response, body: any) => {
     if (!error && response.statusCode === 200) {
       req.session.accessToken = body;
-			res.redirect('http://localhost:5173/collection');
+			res.redirect(clientUrl + '/playlist/');
     }
   });
 });
