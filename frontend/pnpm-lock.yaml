@@ -44,6 +44,9 @@ dependencies:
   react-router-dom:
     specifier: ^6.25.1
     version: 6.25.1(react-dom@18.3.1)(react@18.3.1)
+  superjson:
+    specifier: ^1.13.3
+    version: 1.13.3
   tailwind-merge:
     specifier: ^2.4.0
     version: 2.4.0
@@ -1116,7 +1119,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.23.2
-      caniuse-lite: 1.0.30001646
+      caniuse-lite: 1.0.30001643
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.1
@@ -1154,8 +1157,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001646
-      electron-to-chromium: 1.5.4
+      caniuse-lite: 1.0.30001643
+      electron-to-chromium: 1.5.2
       node-releases: 2.0.18
       update-browserslist-db: 1.1.0(browserslist@4.23.2)
     dev: true
