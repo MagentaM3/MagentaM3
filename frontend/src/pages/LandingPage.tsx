@@ -1,27 +1,16 @@
-import car from '../../assets/magentam3.jpg';
+import car from '../assets/magentam3.jpg';
 
 export const LandingPage = () => {
 
 	const handleClick = async () => {
-		const scopes = ['user-read-private', 'user-read-email']
-		// this is the backend url that is posted the access token :) 
-		const postbackUrl = 'http://localhost:8888/login';
-
-		const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID ?? ""
-		const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URI ?? ""
-
-		// your application requests authorization
 		const scope = 'user-read-private user-read-email';
-		console.log("A")
-
-
 		const authUrl = new URL("https://accounts.spotify.com/authorize")
 
 		const params = {
+			client_id: import.meta.env.VITE_SPOTIFY_CLIENT_ID ?? "",
+			redirect_uri: import.meta.env.VITE_SPOTIFY_REDIRECT_URI ?? "",
 			response_type: 'code',
-			client_id: clientId,
 			scope: scope,
-			redirect_uri: redirectUri,
 		}
 
 		authUrl.search = new URLSearchParams(params).toString();
