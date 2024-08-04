@@ -3,7 +3,6 @@ import { Image } from './image.ts';
 import { PlaylistTrack } from './playlistTrack.ts';
 import { User } from './user.ts';
 
-
 export const Playlist = z.object({
     id: z.number(),
     collaborative: z.boolean(),
