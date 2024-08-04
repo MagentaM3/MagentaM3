@@ -4,12 +4,12 @@ import { Image } from './image.ts';
 
 export const Album = z.object({
     id: z.number(),
-    album_type: z.enum(["album", "single", "compilation"]),
-    total_tracks: z.number(),
+    albumType: z.enum(["album", "single", "compilation"]),
+    totalTracks: z.number(),
     images: z.array(Image),
     name: z.string(),
-    release_date: z.date(),
-    release_date_precision: z.enum(["year", "month", "day"]),
+    releaseDate: z.date(),
+    releaseDatePrecision: z.enum(["year", "month", "day"]),
     uri: z.string(),
     artists: z.array(Artist)
 });

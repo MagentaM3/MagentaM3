@@ -5,8 +5,8 @@ import { User } from './user.ts';
 
 export const PlaylistTrack = z.object({
     id: z.number(),
-    added_at: z.date(),
-    added_by: User,
+    addedAt: z.date(),
+    addedBy: User,
     track: Track,
     playlist: Playlist
 });

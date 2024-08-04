@@ -12,7 +12,7 @@ export const Playlist = z.object({
     name: z.string(),
     owner: User,
     tracks: z.array(PlaylistTrack),
-    snapshot_id: z.string(),
+    snapshotId: z.string(),
     uri: z.string()
 });
 
