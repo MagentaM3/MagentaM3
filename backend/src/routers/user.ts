@@ -1,8 +1,7 @@
 import z from 'zod';
 import { db } from '../db/connection';
 import { users } from '../db/schema/user';
-import { syncSpotifyData } from '../services/spotify';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, publicProcedure } from '../trpc';
 import { User } from '../types/user';
 
 export const userRouter = createTRPCRouter({
@@ -14,9 +13,4 @@ export const userRouter = createTRPCRouter({
 			const result = await db.select().from(users);
       return result[0];
     }),
-	syncSpotifyData: protectedProcedure
-		.mutation(({ ctx }) => {
-			// use your ORM of choice
-			syncSpotifyData(ctx.session.accessToken);
-		}),
 });

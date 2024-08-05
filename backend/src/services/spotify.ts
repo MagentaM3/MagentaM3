@@ -2,6 +2,7 @@ import { AccessToken, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { env } from '../env';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
+const clientSecret: string = env.SPOTIFY_CLIENT_SECRET;
 
 export const getSpotifyApi = (accessToken: AccessToken): SpotifyApi =>
 	SpotifyApi.withAccessToken(clientId, accessToken);
@@ -43,3 +44,22 @@ export const syncPlaylist = async (accessToken: AccessToken, playlistId: string)
 	console.log(playlist);
 	console.log(playlistItems);
 }
+
+export const generateRandomImages = async () => {
+	const spotifyApi = SpotifyApi.withClientCredentials(clientId, clientSecret);
+
+	const artistIds = [
+		"6USv9qhCn6zfxlBQIYJ9qs",
+		"2HkSsS8O2U2gPhnCGVN5vn",
+		"142YBUGmLWCJigFLzgguf8"
+	]
+
+	const randomId = artistIds[Math.floor(Math.random() * artistIds.length)]
+
+	const albums = await spotifyApi.artists.albums(randomId, 'album,single', 'ES', 5);
+
+	return albums.items.map(item => {
+		return {name: item.name, value: item.release_date, url: item.images[0].url, width: 100, height: 100};
+	});
+
+} 

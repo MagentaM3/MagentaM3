@@ -1,5 +1,7 @@
+import { Loading } from '@/components/loading/Loading';
 import { columns, Payment } from '@/components/playlist/columns';
 import { DataTable } from '@/components/playlist/data-table';
+import { trpc } from '@/utils/trpc';
 import { useParams } from 'react-router-dom';
 
 function getData(playlistId: string): Payment[] {
@@ -17,12 +19,16 @@ function getData(playlistId: string): Payment[] {
  
 const PlaylistPage = () => {
 	const { playlistId } = useParams();
+	trpc.user.user.useQuery();
   const data = getData(playlistId ?? "");
- 
+
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
-    </div>
+		<>
+			<div className="container mx-auto py-10">
+				<DataTable columns={columns} data={data} />
+			</div>
+			<Loading />
+		</>
   )
 }
 
