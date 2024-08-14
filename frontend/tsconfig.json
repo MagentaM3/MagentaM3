@@ -23,6 +23,9 @@
       "@/*": ["./src/*"],
       "@sc": ["./stitches.config.ts"]
     },
+		"types": [
+			"node"
+		]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

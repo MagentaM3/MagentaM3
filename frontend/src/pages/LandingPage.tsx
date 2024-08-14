@@ -1,6 +1,6 @@
 import car from '../assets/magentam3.jpg';
 
-export const LandingPage = () => {
+const LandingPage = () => {
 
 	const handleClick = async () => {
 		const scope = 'user-read-private user-read-email';
@@ -14,7 +14,7 @@ export const LandingPage = () => {
 		}
 
 		authUrl.search = new URLSearchParams(params).toString();
-		window.open(authUrl.toString());
+		window.open(authUrl.toString(), '_self');
 	}
 
 	return (
@@ -36,3 +36,5 @@ export const LandingPage = () => {
 		</>
 	);
 };
+
+export default LandingPage;
