@@ -13,8 +13,6 @@ export const TrackListImage = z.object({
   name: z.string(),
 	value: z.string(),
 	url: z.string(),
-	height: z.number(),
-	width: z.number(),
 });
 
 export type TrackListImageZ = z.input<typeof TrackListImage>;
