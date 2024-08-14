@@ -6,7 +6,7 @@ import { trpc } from '@/utils/trpc';
 import SortIterator from './SortIterator';
 import './styles.css';
 
-export const Loading = () => {
+export const SortAnimation = () => {
   const [rows, set] = useState<TrackListImages>([]);
 	const imageQuery = trpc.spotify.generateRandomImages.useQuery();
 	let sortIterator: SortIterator;

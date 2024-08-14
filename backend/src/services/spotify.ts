@@ -59,6 +59,6 @@ export const generateRandomImages = async () => {
 	const albums = await spotifyApi.artists.albums(randomId, 'album,single', 'ES', 10);
 
 	return albums.items.map(item => {
-		return {name: item.name, value: item.release_date, url: item.images[0].url, width: 200, height: 200};
+		return {name: item.name, value: item.release_date, url: item.images[0].url, width: 100, height: 100};
 	});
 }
