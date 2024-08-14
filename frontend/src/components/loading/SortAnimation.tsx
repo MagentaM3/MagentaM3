@@ -22,12 +22,12 @@ export const SortAnimation = () => {
 					imageQuery.refetch();
 				}
 			}
-		}, 700);
+		}, 500);
     return () => clearInterval(t)
   }, [imageQuery.data]);
 
   let width = 0
-	let imageWidth = .8 * window.innerWidth / 10;
+	let imageWidth = .6 * window.innerWidth / 10;
   const transitions = useTransition(
     rows.map(data => ({ ...data, x: (width += imageWidth) - imageWidth })),
     {
@@ -46,7 +46,7 @@ export const SortAnimation = () => {
 					<animated.div className='card' style={{ zIndex: (imageQuery.data?.length ?? 0) - index, ...style }}>
 						<div className='cell'>
 							<img className='details' src={item.url} />
-							{/* <div className='mx-auto mt-1 w-fit'>{item.value}</div> */}
+							<div className='mx-auto mt-1 w-fit'>{item.value}</div>
 						</div>
 					</animated.div>
 				))}
