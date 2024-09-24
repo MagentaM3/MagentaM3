@@ -1,6 +1,6 @@
-import car from '../assets/magentam3.jpg';
+import car from '@/assets/magentam3.jpg';
 
-export const LandingPage = () => {
+const LandingPage = () => {
 
 	const handleClick = async () => {
 		const scope = 'user-read-private user-read-email';
@@ -36,3 +36,5 @@ export const LandingPage = () => {
 		</>
 	);
 };
+
+export default LandingPage;
