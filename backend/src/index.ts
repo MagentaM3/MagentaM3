@@ -63,7 +63,7 @@ app.get('/callback', (req: Request, res: Response) => {
   request.post(authOptions, async (error: any, response: request.Response, body: any) => {
     if (!error && response.statusCode === 200) {
       req.session.accessToken = body;
-			res.redirect('http://localhost:5173/collection');
+			res.redirect('http://localhost:5173/playlist');
     }
   });
 });
