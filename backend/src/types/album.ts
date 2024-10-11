@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { Artist } from './artist.ts';
 import { Image } from './image.ts';
 
 export const Album = z.object({
@@ -11,7 +10,8 @@ export const Album = z.object({
     releaseDate: z.date(),
     releaseDatePrecision: z.enum(["year", "month", "day"]),
     uri: z.string(),
-    artists: z.array(Artist)
+    // Dont need the artist for now
+    // artists: z.array(Artist)
 });
 
 export type AlbumZ = z.input<typeof Album>;
