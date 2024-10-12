@@ -7,7 +7,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   display_name: varchar("display_name", { length: 256 }),
   country: varchar("country", { length: 2 }),
-  email: text("email"),
+  email: varchar("email", { length: 256 }),
   uri: text("link")
 });
 
