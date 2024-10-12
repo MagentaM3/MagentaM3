@@ -9,7 +9,7 @@ export const albums = pgTable("albums", {
   total_tracks: integer("total_tracks"),
   name: varchar("name", { length: 256 }),
   release_date: timestamp("release_date"),
-  release_date_precision: varchar("release_date_precision", { enum: ["year", "month", "day"]}),
+  release_date_precision: varchar("release_date_precision", { enum: ["year", "month", "day"] }),
   uri: text("uri"),
 });
 
