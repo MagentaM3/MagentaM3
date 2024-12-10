@@ -20,23 +20,23 @@ const LandingPage = () => {
 	return (
 		<header className='grid content-center min-h-screen'>
 			<div className='flex justify-around'>
-				<div className='flex w-2/3'>
+				<div className='flex w-full m-8'>
 					<div className='flex flex-col justify-around w-2/5 mr-4'>
 						<div>
-							<h1 className='text-right text-7xl text-transparent leading-snug
+							<h1 className='text-right text-7xl xs:text-4xl text-transparent leading-snug
 								bg-gradient-to-r from-pink-600 via-rose-600 to-amber-500 bg-clip-text'>
 								MagentaM3
 							</h1>
 							<h2 className='text-right text-3xl'>Organize your Playlists</h2>
 							<div className='flex flex-row-reverse mt-12'>
 								<button onClick={handleClick} 
-									className='btn btn-amber btn-amber-hover-ring w-1/2'>
+									className='btn btn-amber btn-amber-hover-ring'>
 									Login to Spotify
 								</button>
 							</div>
 						</div>
 					</div>
-					<div className='w-3/5'>
+					<div className='w-3/5 max-w-lg'>
 						<LandingImage/>
 					</div>
 				</div>
