@@ -2,13 +2,12 @@ import { pgTable, serial, integer, boolean, varchar, text, primaryKey } from "dr
 import { relations } from "drizzle-orm";
 import { albums } from "./album";
 import { artists } from "./artist";
-import { playlistsToTracks } from "./playlist";
 
 export const tracks = pgTable("tracks", {
   id: serial("id").primaryKey(),
   album_id: integer("album_id").notNull().references(() => albums.id),
   duration_ms: integer("duration_ms"),
-  disc_number: integer("dis_number"),
+  disc_number: integer("disc_number"),
   explict: boolean("explicit"),
   name: varchar("name", { length: 256 }),
   popularity: integer("popularity"), // Can you constrain the integer??
@@ -22,8 +21,7 @@ export const tracksRelations = relations(tracks, ({ one, many }) => ({
     fields: [tracks.album_id],
     references: [albums.id],
   }),
-  tracksToArtists: many(tracksToArtists),
-  playlistsToTracks: many(playlistsToTracks),
+  artists: many(tracksToArtists),
 }));
 
 export const tracksToArtists = pgTable(

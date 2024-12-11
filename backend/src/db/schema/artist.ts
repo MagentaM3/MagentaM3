@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
 import { tracksToArtists } from "./track";
+import { artistsToAlbums } from "./album";
 
 export const artists = pgTable("artists", {
   id: serial("id").primaryKey().notNull(),
@@ -9,5 +10,6 @@ export const artists = pgTable("artists", {
 });
 
 export const artistsRelations = relations(artists, ({ many }) => ({
-  tracksToArtists: many(tracksToArtists),
+  tracks: many(tracksToArtists),
+  albums: many(artistsToAlbums)
 }));
