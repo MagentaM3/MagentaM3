@@ -2,8 +2,8 @@
 import { z } from 'zod';
 import { Album } from './album.ts';
 import { Artist } from './artist.ts';
-import { User } from './user.ts'; // Import User for PlaylistTrack
 
+// Info for the given track 
 export const Track = z.object({
     id: z.number(),
     album: Album,
@@ -20,14 +20,16 @@ export const Track = z.object({
 
 export type TrackZ = z.input<typeof Track>;
 
-// PlaylistTrack definition moved here
-export const PlaylistTrack = z.object({
-    id: z.number(),
-    addedAt: z.date(),
-    addedBy: User,
-    track: Track,
-    // Removed playlist since it's not needed
-    // playlist: Playlist
-});
+// NOTE: CAN'T HAVE PLAYLISTTRACK HERE SINCE IT CAUSES CIRCULAR DEPENDENCY
 
-export type PlaylistTrackZ = z.input<typeof PlaylistTrack>;
+// // A song within the paylist
+// export const PlaylistTrack = z.object({
+//     id: z.number(),
+//     addedAt: z.date(),
+//     addedBy: User,
+//     track: Track,
+//     // Removed playlist since it's not needed
+//     playlist: Playlist
+// });
+
+// export type PlaylistTrackZ = z.input<typeof PlaylistTrack>;
