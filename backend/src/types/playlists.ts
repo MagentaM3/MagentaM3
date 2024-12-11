@@ -11,12 +11,9 @@ export const Playlists = z.object({
     images: z.array(Image),
     name: z.string(),
     owner: User,
-    // TODO:
-    // PlaylistTracksReference
-    // https://spotify-api.js.org/apiTypes/interface/PlaylistTracksReference
     tracks: z.array(PlaylistTrack),
     // snapshotId: z.string(),
     uri: z.string()
 });
 
-export type NotSimplifiedPlaylistZ = z.input<typeof Playlists>;
+export type PlaylistZ = z.input<typeof Playlists>;

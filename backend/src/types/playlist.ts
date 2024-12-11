@@ -16,7 +16,6 @@ export const Playlist = z.object({
     uri: z.string()
 });
 
-// https://spotify-api.js.org/apiTypes/interface/SimplifiedPlaylist
 // simplified playlist
 export const SimplifiedPlaylist = z.object({
     id: z.number(),
