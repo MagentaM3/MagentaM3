@@ -1,10 +1,10 @@
-import { pgTable, serial, text, integer, boolean, varchar } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, integer, boolean, varchar, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from 'drizzle-orm';
 import { users } from "./user"
 import { images } from "./images"
-import { playlistTracks } from "./playlistTrack";
+import { tracks } from "./track";
 
-export const playlists = pgTable("playlist", {
+export const playlists = pgTable("playlists", {
   id: serial("id").primaryKey(),
   collaborative: boolean("collaborative"),
   description: text("description"),
@@ -20,5 +20,31 @@ export const playlistsRelations = relations(playlists, ({ one, many }) => ({
     references: [users.id], 
   }),
   images: many(images),
-  tracks: many(playlistTracks),
+  playlistsToTracks: many(playlistsToTracks),
+}));
+
+export const playlistsToTracks = pgTable( 
+  "playlists_to_tracks", 
+  {
+    playlistId: integer('playlist_id')
+      .notNull()
+      .references(() => playlists.id),
+    trackId: integer('track_id')
+      .notNull()
+      .references(() => tracks.id)
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.playlistId, t.trackId]})
+  })
+);
+
+export const playlistsToTracksRelations = relations(playlistsToTracks, ({ one }) => ({
+  playlist: one(playlists, {
+    fields: [playlistsToTracks.playlistId],
+    references: [playlists.id],
+  }),
+  tracks: one(tracks, {
+    fields: [playlistsToTracks.trackId],
+    references: [tracks.id]
+  }),
 }));

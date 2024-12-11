@@ -6,3 +6,7 @@ export const images = pgTable("images", {
   height: integer("height"),
   width: integer("width"),
 });
+
+// export const imageRelations = (({ many }) => ({
+
+// }));

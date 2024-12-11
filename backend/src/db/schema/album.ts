@@ -10,11 +10,33 @@ export const albums = pgTable("albums", {
   name: varchar("name", { length: 256 }),
   release_date: timestamp("release_date"),
   release_date_precision: varchar("release_date_precision", { enum: ["year", "month", "day"] }),
-  uri: text("uri"),
+  uri: text("link"),
 });
 
 export const albumsRelations = relations(albums, ({ many }) => ({
   images: many(images),
-  artists:many(artists),
+  artistsToAlbums :many(artistsToAlbums),
 }));
 
+export const artistsToAlbums = pgTable(
+  'artists_to_albums',
+  {
+    artistId: integer('artist_id')
+      .notNull()
+      .references(() => artists.id),
+    albumId: integer('album_id')
+      .notNull()
+      .references(() => albums.id)
+  }
+)
+
+export const artistsToAlbumsRelations = relations(artistsToAlbums, ({ one }) => ({
+  artist: one(artists, {
+    fields: [artistsToAlbums.artistId],
+    references: [artists.id],
+  }),
+  albums: one(albums, {
+    fields: [artistsToAlbums.albumId],
+    references: [albums.id],
+  }),
+}));

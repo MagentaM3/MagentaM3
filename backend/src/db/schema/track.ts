@@ -1,7 +1,8 @@
-import { pgTable, serial, integer, boolean, varchar, text } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, boolean, varchar, text, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { albums } from "./album";
 import { artists } from "./artist";
+import { playlistsToTracks } from "./playlist";
 
 export const tracks = pgTable("tracks", {
   id: serial("id").primaryKey(),
@@ -13,7 +14,7 @@ export const tracks = pgTable("tracks", {
   popularity: integer("popularity"), // Can you constrain the integer??
   preview_url: text("preview_url"),
   track_number: integer("track_number"),
-  uri: text("uri")
+  uri: text("link")
 });
 
 export const tracksRelations = relations(tracks, ({ one, many }) => ({
@@ -21,5 +22,32 @@ export const tracksRelations = relations(tracks, ({ one, many }) => ({
     fields: [tracks.album_id],
     references: [albums.id],
   }),
-  artists: many(artists),
+  tracksToArtists: many(tracksToArtists),
+  playlistsToTracks: many(playlistsToTracks),
+}));
+
+export const tracksToArtists = pgTable(
+  'tracks_to_artists',
+  {
+    trackId: integer('track_id')
+      .notNull()
+      .references(() => tracks.id),
+    artistId: integer('artist_id')
+      .notNull()
+      .references(() => artists.id)
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.artistId, t.trackId]})
+  }),
+);
+
+export const tracksToArtistsRelations = relations(tracksToArtists, ({ one }) => ({
+  tracks: one(tracks, {
+    fields: [tracksToArtists.trackId],
+    references: [tracks.id],
+  }),
+  artists: one(artists, {
+    fields: [tracksToArtists.artistId],
+    references: [artists.id]
+  }),
 }));
