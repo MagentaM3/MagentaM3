@@ -1,7 +1,7 @@
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
-
 import { LogModule, Logger } from '../logging';
 import { db } from './connection';
+import "dotenv/config"
 
 const LM = new LogModule('MIGRATOR');
 
