@@ -4,7 +4,7 @@ import { images } from "./images";
 import { artists } from "./artist";
 
 export const albums = pgTable("albums", {
-  id: serial("id").primaryKey().notNull(),
+  id: serial("id").primaryKey(),
   album_type: varchar("album_type", { enum: ["album", "single", "compilation"] }),
   total_tracks: integer("total_tracks"),
   name: varchar("name", { length: 256 }),
@@ -15,8 +15,9 @@ export const albums = pgTable("albums", {
 
 export const albumsRelations = relations(albums, ({ many }) => ({
   images: many(images),
-  artists :many(artistsToAlbums),
+  artists: many(artistsToAlbums),
 }));
+
 
 export const artistsToAlbums = pgTable(
   'artists_to_albums',
@@ -29,7 +30,7 @@ export const artistsToAlbums = pgTable(
       .references(() => albums.id)
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.artistId, t.albumId]})
+    pk: primaryKey({ columns: [t.artistId, t.albumId] })
   }),
 )
 

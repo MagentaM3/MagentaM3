@@ -22,29 +22,3 @@ export const playlistsRelations = relations(playlists, ({ one, many }) => ({
   images: many(images),
   tracks: many(playlist_tracks),
 }));
-
-// export const playlistsToPlaylistTracks = pgTable( 
-//   "playlists_to_PlaylistTracks", 
-//   {
-//     playlistId: integer('playlist_id')
-//       .notNull()
-//       .references(() => playlists.id),
-//     trackId: integer('track_id')
-//       .notNull()
-//       .references(() => playlist_tracks.id)
-//   },
-//   (t) => ({
-//     pk: primaryKey({ columns: [t.playlistId, t.trackId]})
-//   })
-// );
-
-// export const playlistsToTracksRelations = relations(playlistsToPlaylistTracks, ({ one }) => ({
-//   playlist: one(playlists, {
-//     fields: [playlistsToPlaylistTracks.playlistId],
-//     references: [playlists.id],
-//   }),
-//   tracks: one(playlist_tracks, {
-//     fields: [playlistsToPlaylistTracks.trackId],
-//     references: [playlist_tracks.id]
-//   }),
-// }));
