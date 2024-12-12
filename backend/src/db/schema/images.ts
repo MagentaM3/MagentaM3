@@ -5,7 +5,7 @@ import { playlists } from "./playlist";
 import { albums } from "./album";
 
 export const images = pgTable("images", {
-  id: serial("id").primaryKey(),
+  id: serial("id"),
   url: text("link"),
   height: integer("height"),
   width: integer("width"),
@@ -15,15 +15,15 @@ export const images = pgTable("images", {
 });
 
 export const imageRelations = relations(images, ({ one }) => ({
-  // users: one(users, {
+  // user: one(users, {
   //   fields: [images.user_id],
   //   references: [users.id]
   // }),
-  playlists: one(playlists, {
+  playlist: one(playlists, {
     fields: [images.playlist_id],
     references: [playlists.id]
   }),
-  albums: one(albums, {
+  album: one(albums, {
     fields: [images.album_id],
     references: [albums.id]
   })
