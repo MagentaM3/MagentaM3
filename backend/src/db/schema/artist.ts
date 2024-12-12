@@ -4,7 +4,7 @@ import { tracksToArtists } from "./track";
 import { artistsToAlbums } from "./album";
 
 export const artists = pgTable("artists", {
-  id: serial("id").primaryKey().notNull(),
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 256 }).notNull(),
   uri: text("link").notNull(),
 });

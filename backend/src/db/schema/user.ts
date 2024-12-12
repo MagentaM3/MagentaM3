@@ -11,7 +11,7 @@ export const users = pgTable("users", {
   uri: text("link")
 });
 
-export const userRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   playlists: many(playlists),
   images: many(images),
 }));
