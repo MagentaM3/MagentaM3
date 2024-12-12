@@ -7,6 +7,7 @@ import { images } from "./schema/images";
 import { albums } from "./schema/album";
 import { playlists } from "./schema/playlist";
 import { tracks } from "./schema/track";
+import { playlist_tracks } from "./schema/playlistTrack";
 
 const LM = new LogModule('SEEDER');
 
@@ -32,34 +33,23 @@ export const seedDB = async () => {
 
   Logger.Info(LM, 'Begin seeding the database');
 
-  Logger.Info(LM, 'Seeding artists');
+  Logger.Info(LM, 'Seeding Artists');
 
   const newArtist = await db.insert(artists).values({
     name: 'justin',
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ id: artists.id});
+  .returning({ id: artists.id });
   console.log(newArtist);
 
   const artist2 = await db.insert(artists).values({
     name: 'justin',
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ id: artists.id});
+  .returning({ id: artists.id });
   console.log(artist2);
-	
-  Logger.Info(LM, 'Seeding Images');
 
-  const newImage = await db.insert(images).values({
-    height: 10,
-    width: 12,
-    // user_id: 1,
-    url: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
-  })
-  .returning({ id: images.id});
-  console.log(newImage);
-
-  Logger.Info(LM, 'Seeding Album');
+  Logger.Info(LM, 'Seeding Albums');
 
   const newAlbum = await db.insert(albums).values({
     album_type: "single",
@@ -68,10 +58,10 @@ export const seedDB = async () => {
     release_date_precision: "year",
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ id: albums.id});
+  .returning({ id: albums.id });
   console.log(newAlbum);
 
-  Logger.Info(LM, 'Seeding user');
+  Logger.Info(LM, 'Seeding Users');
 
   const newUser = await db.insert(users).values({
     display_name: 'justin',
@@ -79,10 +69,19 @@ export const seedDB = async () => {
     email: 'Justin@kitty.com',
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ userId: users.id});
+  .returning({ userId: users.id });
   console.log(newUser);
 
-  Logger.Info(LM, 'Seeding playlists');
+  const newUser2 = await db.insert(users).values({
+    display_name: 'justin',
+    country: 'AU',
+    email: 'Justin@kitty.com',
+    uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
+  })
+  .returning({ userId: users.id });
+  console.log(newUser2);
+
+  Logger.Info(LM, 'Seeding Playlists');
 
   const newPlaylist = await db.insert(playlists).values({
     collaborative: true,
@@ -92,7 +91,7 @@ export const seedDB = async () => {
     snapshot_id: "snapshot_id",
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ playlist : playlists.id});
+  .returning({ playlist : playlists.id });
   console.log(newPlaylist);
 
   Logger.Info(LM, 'Seeding Tracks');
@@ -108,8 +107,30 @@ export const seedDB = async () => {
     track_number: 5,
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ track : tracks.id});
+  .returning({ track : tracks.id });
   console.log(newTrack);
+
+  Logger.Info(LM, 'Seeding PlaylistTracks');
+
+  const newPlaylistTrack = await db.insert(playlist_tracks).values({
+    added_by_id: 2,
+    track_id: 1,
+    playlist_id: 1
+  })
+  .returning({ id: playlist_tracks.id, added_by : playlist_tracks.added_by_id });
+  console.log(newPlaylistTrack);
+
+  Logger.Info(LM, 'Seeding Images');
+
+  const newImage = await db.insert(images).values({
+    height: 10,
+    width: 12,
+    user_id: 1,
+    album_id: 1,
+    url: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
+  })
+  .returning({ image: images.id });
+  console.log(newImage);
 
   Logger.Info(LM, 'Database has been seeded');
 };
