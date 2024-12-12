@@ -5,7 +5,8 @@ import { users } from "./schema/user";
 import { artists } from "./schema/artist";
 import { images } from "./schema/images";
 import { albums } from "./schema/album";
-// import { playlists } from "./schema/playlist";
+import { playlists } from "./schema/playlist";
+import { tracks } from "./schema/track";
 
 const LM = new LogModule('SEEDER');
 
@@ -23,7 +24,7 @@ export const seedDB = async () => {
   const tables = await db.execute(query);
   for (const table of tables) {
     console.log(table.table_name)
-    const query = sql.raw(`TRUNCATE TABLE ${table.table_name as string} RESTART IDENTITY CASCADE;`);
+    const query = sql.raw(`TRUNCATE TABLE "${table.table_name as string}" RESTART IDENTITY CASCADE;`);
     await db.execute(query);
   }
 
@@ -52,6 +53,7 @@ export const seedDB = async () => {
   const newImage = await db.insert(images).values({
     height: 10,
     width: 12,
+    // user_id: 1,
     url: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
   .returning({ id: images.id});
@@ -79,6 +81,35 @@ export const seedDB = async () => {
   })
   .returning({ userId: users.id});
   console.log(newUser);
+
+  Logger.Info(LM, 'Seeding playlists');
+
+  const newPlaylist = await db.insert(playlists).values({
+    collaborative: true,
+    description: "my favourite playlist ever",
+    name: "YEEEE",
+    owner_Id: 1,
+    snapshot_id: "snapshot_id",
+    uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
+  })
+  .returning({ playlist : playlists.id});
+  console.log(newPlaylist);
+
+  Logger.Info(LM, 'Seeding Tracks');
+
+  const newTrack = await db.insert(tracks).values({
+    album_id: 1,
+    duration_ms: 420,
+    disc_number: 2,
+    explict: true,
+    name: "explict",
+    popularity: 30,
+    preview_url: "https://test.com",
+    track_number: 5,
+    uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
+  })
+  .returning({ track : tracks.id});
+  console.log(newTrack);
 
   Logger.Info(LM, 'Database has been seeded');
 };
