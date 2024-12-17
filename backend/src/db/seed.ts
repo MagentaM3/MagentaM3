@@ -7,7 +7,7 @@ import { images } from "./schema/images";
 import { albums } from "./schema/album";
 import { playlists } from "./schema/playlist";
 import { tracks } from "./schema/track";
-import { playlist_tracks } from "./schema/playlistTrack";
+import { playlistTracks } from "./schema/playlistTrack";
 
 const LM = new LogModule('SEEDER');
 
@@ -52,10 +52,10 @@ export const seedDB = async () => {
   Logger.Info(LM, 'Seeding Albums');
 
   const newAlbum = await db.insert(albums).values({
-    album_type: "single",
-    total_tracks: 3,
+    albumType: "single",
+    totalTracks: 3,
     name: "best playlist",
-    release_date_precision: "year",
+    releaseDatePrecision: "year",
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
   .returning({ id: albums.id });
@@ -64,7 +64,7 @@ export const seedDB = async () => {
   Logger.Info(LM, 'Seeding Users');
 
   const newUser = await db.insert(users).values({
-    display_name: 'justin',
+    displayName: 'justin',
     country: 'AU',
     email: 'Justin@kitty.com',
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
@@ -73,7 +73,7 @@ export const seedDB = async () => {
   console.log(newUser);
 
   const newUser2 = await db.insert(users).values({
-    display_name: 'justin',
+    displayName: 'justin',
     country: 'AU',
     email: 'Justin@kitty.com',
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
@@ -87,8 +87,8 @@ export const seedDB = async () => {
     collaborative: true,
     description: "my favourite playlist ever",
     name: "YEEEE",
-    owner_Id: 1,
-    snapshot_id: "snapshot_id",
+    ownerId: 1,
+    snapshotId: "snapshot_id",
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
   .returning({ playlist : playlists.id });
@@ -97,14 +97,14 @@ export const seedDB = async () => {
   Logger.Info(LM, 'Seeding Tracks');
 
   const newTrack = await db.insert(tracks).values({
-    album_id: 1,
-    duration_ms: 420,
-    disc_number: 2,
+    albumId: 1,
+    durationMs: 420,
+    discNumber: 2,
     explict: true,
     name: "explict",
     popularity: 30,
-    preview_url: "https://test.com",
-    track_number: 5,
+    previewUrl: "https://test.com",
+    trackNumber: 5,
     uri: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
   .returning({ track : tracks.id });
@@ -112,12 +112,12 @@ export const seedDB = async () => {
 
   Logger.Info(LM, 'Seeding PlaylistTracks');
 
-  const newPlaylistTrack = await db.insert(playlist_tracks).values({
-    added_by_id: 2,
-    track_id: 1,
-    playlist_id: 1
+  const newPlaylistTrack = await db.insert(playlistTracks).values({
+    addedById: 2,
+    trackId: 1,
+    playlistId: 1
   })
-  .returning({ id: playlist_tracks.id, added_by : playlist_tracks.added_by_id });
+  .returning({ id: playlistTracks.id, added_by : playlistTracks.addedById });
   console.log(newPlaylistTrack);
 
   Logger.Info(LM, 'Seeding Images');
@@ -125,8 +125,8 @@ export const seedDB = async () => {
   const newImage = await db.insert(images).values({
     height: 10,
     width: 12,
-    user_id: 1,
-    album_id: 1,
+    userId: 1,
+    albumId: 1,
     url: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
   .returning({ image: images.id });

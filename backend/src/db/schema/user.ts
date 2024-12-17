@@ -5,7 +5,7 @@ import { playlists } from './playlist';
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  display_name: varchar("display_name", { length: 256 }).notNull(),
+  displayName: varchar("display_name", { length: 256 }).notNull(),
   country: varchar("country", { length: 2 }).notNull(),
   email: varchar("email", { length: 256 }).notNull(),
   uri: text("link")

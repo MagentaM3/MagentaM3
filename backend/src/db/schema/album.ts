@@ -5,11 +5,11 @@ import { artists } from "./artist";
 
 export const albums = pgTable("albums", {
   id: serial("id").primaryKey(),
-  album_type: varchar("album_type", { enum: ["album", "single", "compilation"] }),
-  total_tracks: integer("total_tracks"),
+  albumType: varchar("album_type", { enum: ["album", "single", "compilation"] }),
+  totalTracks: integer("total_tracks"),
   name: varchar("name", { length: 256 }),
-  release_date: timestamp("release_date"),
-  release_date_precision: varchar("release_date_precision", { enum: ["year", "month", "day"] }),
+  releaseDate: timestamp("release_date"),
+  releaseDatePrecision: varchar("release_date_precision", { enum: ["year", "month", "day"] }),
   uri: text("link"),
 });
 

@@ -4,25 +4,25 @@ import { users } from "./user";
 import { playlists } from "./playlist";
 import { tracks } from "./track"
 
-export const playlist_tracks = pgTable("playlist_tracks", {
+export const playlistTracks = pgTable("playlist_tracks", {
   id: serial("id").primaryKey(),
-  added_at: timestamp("added_at").defaultNow(),
-  added_by_id: integer("added_by_id").notNull().references(() => users.id, {onDelete: 'cascade'}),
-  track_id: integer("track_id").notNull().references(() => tracks.id, {onDelete: 'cascade'}),
-  playlist_id: integer("playlist_id").notNull().references(() => playlists.id, {onDelete: 'cascade'})
+  addedAt: timestamp("added_at").defaultNow(),
+  addedById: integer("added_by_id").notNull().references(() => users.id, {onDelete: 'cascade'}),
+  trackId: integer("track_id").notNull().references(() => tracks.id, {onDelete: 'cascade'}),
+  playlistId: integer("playlist_id").notNull().references(() => playlists.id, {onDelete: 'cascade'})
 });
 
-export const playlist_tracksRelations = relations(playlist_tracks, ({ one }) => ({
-  added_by: one(users, {
-    fields: [playlist_tracks.added_by_id],
+export const playlistTracksRelations = relations(playlistTracks, ({ one }) => ({
+  addedBy: one(users, {
+    fields: [playlistTracks.addedById],
     references: [users.id],
   }),
   track: one(tracks, {
-    fields: [playlist_tracks.track_id],
+    fields: [playlistTracks.trackId],
     references: [tracks.id],
   }),
   playlist: one(playlists, {
-    fields: [playlist_tracks.playlist_id],
+    fields: [playlistTracks.playlistId],
     references: [playlists.id]
   }),
 })); 

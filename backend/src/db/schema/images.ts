@@ -9,22 +9,22 @@ export const images = pgTable("images", {
   url: text("link"),
   height: integer("height"),
   width: integer("width"),
-  user_id: integer("user_id").references(() => users.id, {onDelete: 'cascade'}),
-  album_id: integer("album_id").references(() => albums.id, {onDelete: 'cascade'}),
-  playlist_id: integer("playlist_id").references(() => playlists.id, {onDelete: 'cascade'}),
+  userId: integer("user_id").references(() => users.id, {onDelete: 'cascade'}),
+  albumId: integer("album_id").references(() => albums.id, {onDelete: 'cascade'}),
+  playlistId: integer("playlist_id").references(() => playlists.id, {onDelete: 'cascade'}),
 });
 
 export const imageRelations = relations(images, ({ one }) => ({
   user: one(users, {
-    fields: [images.user_id],
+    fields: [images.userId],
     references: [users.id]
   }),
   album: one(albums, {
-    fields: [images.album_id],
+    fields: [images.albumId],
     references: [albums.id]
   }),
   playlist: one(playlists, {
-    fields: [images.playlist_id],
+    fields: [images.playlistId],
     references: [playlists.id]
   }),
 }));
