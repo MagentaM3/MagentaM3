@@ -24,6 +24,13 @@ export type PlaylistTrack = {
 
 export const columns: ColumnDef<PlaylistTrack>[] = [
   {
+    accessorKey: "#",
+    header: "",
+    cell: ({ row }) => {
+      return <div className="text-center">{row.index + 1}</div>
+    },
+  },
+  {
     accessorKey: "image",
     header: "",
     cell: ({ row }) => <img width={50} style={{ borderRadius: "5px" }} src={row.getValue("image")} />
