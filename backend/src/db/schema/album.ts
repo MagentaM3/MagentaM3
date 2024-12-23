@@ -1,10 +1,10 @@
 import { relations } from "drizzle-orm";
-import { timestamp, varchar, integer, pgTable, serial, text, primaryKey } from "drizzle-orm/pg-core";
-import { images } from "./images";
+import { integer, pgTable, primaryKey, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { artists } from "./artist";
+import { images } from "./images";
 
 export const albums = pgTable("albums", {
-  id: serial("id").primaryKey(),
+  id: varchar("id", { length: 30 }).primaryKey(),
   albumType: varchar("album_type", { enum: ["album", "single", "compilation"] }),
   totalTracks: integer("total_tracks"),
   name: varchar("name", { length: 256 }),
@@ -22,10 +22,10 @@ export const albumsRelations = relations(albums, ({ many }) => ({
 export const artistsToAlbums = pgTable(
   'artists_to_albums',
   {
-    artistId: integer('artist_id')
+    artistId: varchar('artist_id')
       .notNull()
       .references(() => artists.id),
-    albumId: integer('album_id')
+    albumId: varchar('album_id')
       .notNull()
       .references(() => albums.id)
   },

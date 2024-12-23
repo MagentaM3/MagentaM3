@@ -1,4 +1,6 @@
 import { AccessToken, SpotifyApi } from '@spotify/web-api-ts-sdk';
+import { db } from '../db/connection';
+import { users } from '../db/schema/user';
 import { env } from '../env';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
@@ -14,7 +16,23 @@ export const syncSpotifyData = async (accessToken: AccessToken) => {
 export const syncUserProfile = async (accessToken: AccessToken) => {
 	const spotifyApi = getSpotifyApi(accessToken);
 	const profile = await spotifyApi.currentUser.profile();
-	console.log(profile);
+	const data = {
+		displayName: profile.display_name,  
+		country: profile.country,
+		email: profile.email,
+		uri: profile.uri
+	}
+
+	await db
+  .insert(users)
+  .values({ 
+		id: profile.id, 
+		...data
+	})
+  .onConflictDoUpdate({
+    target: users.id,
+    set: data,
+  });
 }
 
 export const syncUserPlaylists = async (accessToken: AccessToken) => {

@@ -1,15 +1,15 @@
-import { pgTable, serial, text, integer, boolean, varchar } from "drizzle-orm/pg-core";
 import { relations } from 'drizzle-orm';
-import { users } from "./user"
-import { images } from "./images"
+import { boolean, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { images } from "./images";
 import { playlistTracks } from "./playlistTrack";
+import { users } from "./user";
 
 export const playlists = pgTable("playlists", {
-  id: serial("id").primaryKey(),
+  id: varchar("id", { length: 30 }).primaryKey(),
   collaborative: boolean("collaborative"),
   description: text("description"),
   name: varchar("name", { length: 256 }),
-  ownerId: integer("owner_id").notNull().references(() => users.id),
+  ownerId: varchar("owner_id").notNull().references(() => users.id),
   snapshotId: text("snapshot_id"),
   uri: text("link")
 });

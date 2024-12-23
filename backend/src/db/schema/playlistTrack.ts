@@ -1,15 +1,15 @@
-import { timestamp, pgTable, serial, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { users } from "./user";
+import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 import { playlists } from "./playlist";
-import { tracks } from "./track"
+import { tracks } from "./track";
+import { users } from "./user";
 
 export const playlistTracks = pgTable("playlist_tracks", {
   id: serial("id").primaryKey(),
   addedAt: timestamp("added_at").defaultNow(),
-  addedById: integer("added_by_id").notNull().references(() => users.id, {onDelete: 'cascade'}),
-  trackId: integer("track_id").notNull().references(() => tracks.id, {onDelete: 'cascade'}),
-  playlistId: integer("playlist_id").notNull().references(() => playlists.id, {onDelete: 'cascade'})
+  addedById: varchar("added_by_id").notNull().references(() => users.id, {onDelete: 'cascade'}),
+  trackId: varchar("track_id").notNull().references(() => tracks.id, {onDelete: 'cascade'}),
+  playlistId: varchar("playlist_id").notNull().references(() => playlists.id, {onDelete: 'cascade'})
 });
 
 export const playlistTracksRelations = relations(playlistTracks, ({ one }) => ({
