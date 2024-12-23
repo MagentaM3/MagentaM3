@@ -6,7 +6,6 @@ services:
     restart: always
     ports:
       - 8080:8080
-      - 4983:4983
     expose:
       - 8080
     volumes:
@@ -22,6 +21,7 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
+      - DB_URL=${DB_URL}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
