@@ -63,7 +63,7 @@ export const syncPlaylist = async (accessToken: AccessToken, playlistId: string)
 		return;
 	}
 
-	// CLEAR ALL PLAYLIST TRACKS
+	await db.delete(playlistTracks).where(eq(playlistTracks.playlistId, playlistId));
 
 	const data = {
 		collaborative: playlist.collaborative,

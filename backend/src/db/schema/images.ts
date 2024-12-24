@@ -1,11 +1,11 @@
 import { relations } from "drizzle-orm";
-import { integer, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
 import { albums } from "./album";
 import { playlists } from "./playlist";
 import { users } from "./user";
 
 export const images = pgTable("images", {
-  id: serial("id").primaryKey(),
+  id: varchar("id", { length: 36 }).primaryKey(),
   url: text("link"),
   height: integer("height"),
   width: integer("width"),
