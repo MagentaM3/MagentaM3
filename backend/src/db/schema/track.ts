@@ -4,7 +4,7 @@ import { albums } from "./album";
 import { artists } from "./artist";
 
 export const tracks = pgTable("tracks", {
-  id: varchar("id", { length: 30 }).primaryKey(),
+  id: varchar("id", { length: 36 }).primaryKey(),
   albumId: varchar("album_id").notNull().references(() => albums.id),
   durationMs: integer("duration_ms"),
   discNumber: integer("disc_number"),

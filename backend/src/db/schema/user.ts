@@ -4,7 +4,7 @@ import { images } from './images';
 import { playlists } from './playlist';
 
 export const users = pgTable("users", {
-  id: varchar("id", { length: 30 }).primaryKey(),
+  id: varchar("id", { length: 36 }).primaryKey(),
   displayName: varchar("display_name", { length: 256 }).notNull(),
   country: varchar("country", { length: 2 }).notNull(),
   email: varchar("email", { length: 256 }).notNull(),

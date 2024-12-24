@@ -4,11 +4,11 @@ import { artists } from "./artist";
 import { images } from "./images";
 
 export const albums = pgTable("albums", {
-  id: varchar("id", { length: 30 }).primaryKey(),
+  id: varchar("id", { length: 36 }).primaryKey(),
   albumType: varchar("album_type", { enum: ["album", "single", "compilation"] }),
   totalTracks: integer("total_tracks"),
   name: varchar("name", { length: 256 }),
-  releaseDate: timestamp("release_date"),
+  releaseDate: timestamp("release_date", { mode: 'string' }),
   releaseDatePrecision: varchar("release_date_precision", { enum: ["year", "month", "day"] }),
   uri: text("link"),
 });

@@ -5,7 +5,7 @@ import { playlistTracks } from "./playlistTrack";
 import { users } from "./user";
 
 export const playlists = pgTable("playlists", {
-  id: varchar("id", { length: 30 }).primaryKey(),
+  id: varchar("id", { length: 36 }).primaryKey(),
   collaborative: boolean("collaborative"),
   description: text("description"),
   name: varchar("name", { length: 256 }),
