@@ -7,7 +7,7 @@ import { albums, artistsToAlbums } from '../db/schema/album';
 import { artists } from '../db/schema/artist';
 import { playlists } from '../db/schema/playlist';
 import { playlistTracks } from '../db/schema/playlistTrack';
-import { tracks } from '../db/schema/track';
+import { tracks, tracksToArtists } from '../db/schema/track';
 import { users } from '../db/schema/user';
 import { env } from '../env';
 import { Logger, LogModule } from '../logging';
@@ -129,7 +129,6 @@ const syncPlaylistItems = async (accessToken: AccessToken, playlistId: string, o
 }
 
 const syncPlaylistTrack = async (playlistTrack: Track) => {
-	console.log('Syncing data for track ', playlistTrack.name);
 
 	const albumReleaseDate = playlistTrack.album.release_date;
 	const albumReleaseDatePrecision = playlistTrack.album.release_date_precision as ReleaseDatePrecisionZ;
@@ -161,7 +160,7 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 		uri: playlistTrack.uri
 	}
 	
-	const trackInsert = await db.insert(tracks)
+	const trackInsert = db.insert(tracks)
 		.values(trackData)
 		.onConflictDoNothing();
 
@@ -172,16 +171,24 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 			uri: artist.uri,
 		}
 
-		await db.insert(artists)
+		return db.insert(artists)
 			.values(artistData)
-			.onConflictDoNothing();
-
-		return db.insert(artistsToAlbums)
-			.values({ artistId: artistData.id, albumId: albumData.id })
 			.onConflictDoNothing();
 	}));
 
-	
+	await Promise.all([trackInsert, artistInsert]);
 
-	return Promise.all([trackInsert, artistInsert])
+	const trackToArtistInsert = Promise.all(playlistTrack.artists.map(async (artist) => {
+		return db.insert(tracksToArtists)
+			.values({ artistId: artist.id, trackId: trackData.id })
+			.onConflictDoNothing();
+	}));
+
+	const artistToAlbumInsert = Promise.all(playlistTrack.artists.map(async (artist) => {
+		return db.insert(artistsToAlbums)
+			.values({ artistId: artist.id, albumId: albumData.id })
+			.onConflictDoNothing();
+	}));
+
+	return Promise.all([trackToArtistInsert, artistToAlbumInsert]);
 }
