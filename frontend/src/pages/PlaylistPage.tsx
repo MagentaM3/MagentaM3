@@ -1,10 +1,12 @@
 import { columns, PlaylistTrack } from '@/components/playlist/columns';
 import { DataTable } from '@/components/playlist/data-table';
+import { Button } from '@/components/ui/button';
+import { ButtonLoading } from '@/components/ui/button-loading';
 import { trpc } from '@/utils/trpc';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-function getData(playlistId: string): PlaylistTrack[] {
-	console.log(playlistId)
+function getData(): PlaylistTrack[] {
   // Fetch data from your API here.
   return [
     {
@@ -21,13 +23,26 @@ function getData(playlistId: string): PlaylistTrack[] {
  
 const PlaylistPage = () => {
 	const { playlistId } = useParams();
-	trpc.user.user.useQuery();
-  const data = getData(playlistId ?? "");
+  const data = getData();
+	const syncMutation = trpc.user.syncSpotifyData.useMutation({
+    onSuccess: () => {
+      setLoading(false);
+    }
+  });
+
+	const [loading, setLoading] = useState(false);
+
+	const handleClick = () => {
+		setLoading(true);
+		syncMutation.mutate();
+	}
 
   return (
 		<>
 			<div className="container mx-auto py-10">
 				<DataTable columns={columns} data={data} />
+				<br/>
+				{loading ? <ButtonLoading>Syncing</ButtonLoading> : <Button onClick={handleClick}>Sync Spotify</Button>}
 			</div>
 		</>
   )

@@ -23,6 +23,7 @@ declare module 'express-session' {
   }
 }
 
+// TODO: setup nodejs debugging
 const app = express();
 
 app.use(session({
