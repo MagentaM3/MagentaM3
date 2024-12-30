@@ -5,6 +5,7 @@ import { convertToDateTimestamp } from '../../utils/dateHelper';
 import { db } from '../db/connection';
 import { albums, artistsToAlbums } from '../db/schema/album';
 import { artists } from '../db/schema/artist';
+import { images } from '../db/schema/images';
 import { playlists } from '../db/schema/playlist';
 import { playlistTracks } from '../db/schema/playlistTrack';
 import { tracks, tracksToArtists } from '../db/schema/track';
@@ -39,16 +40,26 @@ export const syncUserProfile = async (accessToken: AccessToken) => {
 		uri: profile.uri
 	}
 
-	await db
-  .insert(users)
-  .values({ 
-		id: profile.id, 
-		...data
-	})
-  .onConflictDoUpdate({
-    target: users.id,
-    set: data,
-  });
+	await db.insert(users)
+		.values({ 
+			id: profile.id, 
+			...data
+		})
+		.onConflictDoUpdate({
+			target: users.id,
+			set: data,
+		});
+
+	await Promise.all(profile.images.map(async (image) => {
+		return db.insert(images)
+			.values({
+				url: image.url,
+				height: image.height,
+				width: image.width,
+				userId: profile.id
+			})
+			.onConflictDoNothing();
+	}))
 }
 
 export const syncUserPlaylists = async (accessToken: AccessToken) => {
@@ -82,16 +93,26 @@ export const syncPlaylist = async (accessToken: AccessToken, playlistId: string)
 		uri: playlist.uri
 	}
 
-	await db
-  .insert(playlists)
-  .values({ 
-		id: playlist.id, 
-		...data
-	})
-  .onConflictDoUpdate({
-    target: users.id,
-    set: data,
-  });
+	await db.insert(playlists)
+		.values({ 
+			id: playlist.id, 
+			...data
+		})
+		.onConflictDoUpdate({
+			target: users.id,
+			set: data,
+		});
+	
+	await Promise.all(playlist.images.map(async (image) => {
+		return db.insert(images)
+			.values({
+				url: image.url,
+				height: image.height,
+				width: image.width,
+				playlistId: playlist.id
+			})
+			.onConflictDoNothing();
+	}))
 
 	const playlistItemsRequests = [];
 
@@ -123,8 +144,8 @@ const syncPlaylistItems = async (accessToken: AccessToken, playlistId: string, o
 		// TODO: only uses the fields of the PlaylistedTrack i.e. doesn't make any
 		// additional calls to Spotify
 		return db
-		.insert(playlistTracks)
-		.values(data);
+			.insert(playlistTracks)
+			.values(data);
 	}))
 }
 
@@ -146,6 +167,17 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 	await db.insert(albums)
 		.values(albumData)
 		.onConflictDoNothing();
+
+	await Promise.all(playlistTrack.album.images.map(async (image) => {
+		return db.insert(images)
+			.values({
+				url: image.url,
+				height: image.height,
+				width: image.width,
+				albumId: playlistTrack.album.id
+			})
+			.onConflictDoNothing();
+	}))
 
 	const trackData = {
 		id: playlistTrack.id,

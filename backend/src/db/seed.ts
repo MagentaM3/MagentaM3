@@ -121,14 +121,12 @@ export const seedDB = async () => {
 
   Logger.Info(LM, 'Seeding Images');
 
-  const newImage = await db.insert(images).values({
-		id: '1',
+  await db.insert(images).values({
     height: 10,
     width: 12,
     userId: '1',
     url: "https://dev.to/anasrin/seeding-database-with-drizzle-orm-fga",
   })
-  .returning({ image: images.id });
 
   Logger.Info(LM, 'Database has been seeded');
 };

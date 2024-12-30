@@ -5,8 +5,7 @@ import { playlists } from "./playlist";
 import { users } from "./user";
 
 export const images = pgTable("images", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  url: text("link"),
+  url: text("link").primaryKey(),
   height: integer("height"),
   width: integer("width"),
   userId: varchar("user_id").references(() => users.id, {onDelete: 'cascade'}),
