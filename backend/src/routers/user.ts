@@ -7,8 +7,6 @@ export const userRouter = createTRPCRouter({
 	syncSpotifyData: protectedProcedure
 		.mutation(async ({ ctx }) => {
 			// use your ORM of choice
-			console.log('hello');
 			await syncSpotifyData(ctx.session.accessToken);
-			console.log('bye');
 		}),
 });
