@@ -1,5 +1,6 @@
 import { columns, PlaylistTrack } from '@/components/playlist/columns';
 import { DataTable } from '@/components/playlist/data-table';
+import { Button } from '@/components/ui/button';
 import { trpc } from '@/utils/trpc';
 import { useParams } from 'react-router-dom';
 
@@ -21,13 +22,24 @@ function getData(playlistId: string): PlaylistTrack[] {
  
 const PlaylistPage = () => {
 	const { playlistId } = useParams();
-	trpc.user.user.useQuery();
   const data = getData(playlistId ?? "");
+	const syncMutation = trpc.user.syncSpotifyData.useMutation({
+    onSuccess: () => {
+      console.log('Synced!');
+    }
+  });
+
+	const handleClick = () => {
+		console.log('Started...');
+		syncMutation.mutate();
+	}
 
   return (
 		<>
 			<div className="container mx-auto py-10">
 				<DataTable columns={columns} data={data} />
+				<br/>
+				<Button onClick={handleClick}>Sync Spotify</Button>
 			</div>
 		</>
   )

@@ -1,30 +1,37 @@
 import { AccessToken, SpotifyApi, Track } from '@spotify/web-api-ts-sdk';
 import { eq } from 'drizzle-orm';
 import { v4 } from 'uuid';
+import { convertToDateTimestamp } from '../../utils/dateHelper';
 import { db } from '../db/connection';
-import { albums } from '../db/schema/album';
+import { albums, artistsToAlbums } from '../db/schema/album';
 import { artists } from '../db/schema/artist';
 import { playlists } from '../db/schema/playlist';
 import { playlistTracks } from '../db/schema/playlistTrack';
 import { tracks } from '../db/schema/track';
 import { users } from '../db/schema/user';
 import { env } from '../env';
+import { Logger, LogModule } from '../logging';
 import { AlbumTypeZ, ReleaseDatePrecisionZ } from '../types/album';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
 const PLAYLIST_ITEMS_LIMIT = 50;
 
+const LM = new LogModule('SEEDER');
+
 export const getSpotifyApi = (accessToken: AccessToken): SpotifyApi =>
 	SpotifyApi.withAccessToken(clientId, accessToken);
 
 export const syncSpotifyData = async (accessToken: AccessToken) => {
+	Logger.Info(LM, `Spotify data sync started`);
 	await syncUserProfile(accessToken);
 	await syncUserPlaylists(accessToken);
+	Logger.Info(LM, `Spotify data sync finished`);
 }
 
 export const syncUserProfile = async (accessToken: AccessToken) => {
 	const spotifyApi = getSpotifyApi(accessToken);
 	const profile = await spotifyApi.currentUser.profile();
+	Logger.Info(LM, `Syncing data for user ${profile.display_name}`);
 	const data = {
 		displayName: profile.display_name,  
 		country: profile.country,
@@ -56,6 +63,7 @@ export const syncPlaylist = async (accessToken: AccessToken, playlistId: string)
 	const spotifyApi = getSpotifyApi(accessToken);
 
 	const playlist = await spotifyApi.playlists.getPlaylist(playlistId);
+	Logger.Info(LM, `Syncing data for playlist ${playlist.name}`);
 
 	const dbPlaylist = await db.select().from(playlists).where(eq(playlists.id, playlistId))
 
@@ -98,7 +106,10 @@ const syncPlaylistItems = async (accessToken: AccessToken, playlistId: string, o
 	const spotifyApi = getSpotifyApi(accessToken);
 	const playlistItems = await spotifyApi.playlists.getPlaylistItems(playlistId, undefined, '', PLAYLIST_ITEMS_LIMIT, offset);
 
-	return Promise.all(playlistItems.items.map(async item => {
+	return Promise.all(playlistItems.items
+		// TODO: handle local files and episode
+		.filter(item => item && item.track && !item.is_local && item.track.type == 'track')
+		.map(async item => {
 		const data = {
 			id: v4(),
 			addedAt: item.added_at,
@@ -107,18 +118,36 @@ const syncPlaylistItems = async (accessToken: AccessToken, playlistId: string, o
 			playlistId: playlistId
 		}
 
-		await db
-		.insert(playlistTracks)
-		.values(data)
+		await syncPlaylistTrack(item.track)
 
 		// TODO: only uses the fields of the PlaylistedTrack i.e. doesn't make any
 		// additional calls to Spotify
-		return syncPlaylistTrack(item.track);
+		return db
+		.insert(playlistTracks)
+		.values(data);
 	}))
 }
 
 const syncPlaylistTrack = async (playlistTrack: Track) => {
-	
+	console.log('Syncing data for track ', playlistTrack.name);
+
+	const albumReleaseDate = playlistTrack.album.release_date;
+	const albumReleaseDatePrecision = playlistTrack.album.release_date_precision as ReleaseDatePrecisionZ;
+
+	const albumData = {
+		id: playlistTrack.album.id,
+		albumType: playlistTrack.album.album_type as AlbumTypeZ,
+		totalTracks: playlistTrack.album.total_tracks,
+		name: playlistTrack.album.name,
+		releaseDate: convertToDateTimestamp(albumReleaseDate, albumReleaseDatePrecision),
+		releaseDatePrecision: albumReleaseDatePrecision,
+		uri: playlistTrack.album.uri
+	}
+
+	await db.insert(albums)
+		.values(albumData)
+		.onConflictDoNothing();
+
 	const trackData = {
 		id: playlistTrack.id,
 		albumId: playlistTrack.album.id,
@@ -132,22 +161,8 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 		uri: playlistTrack.uri
 	}
 	
-	const trackInsert = db.insert(tracks)
+	const trackInsert = await db.insert(tracks)
 		.values(trackData)
-		.onConflictDoNothing();
-
-	const albumData = {
-		id: playlistTrack.album.id,
-		albumType: playlistTrack.album.album_type as AlbumTypeZ,
-		totalTracks: playlistTrack.album.total_tracks,
-		name: playlistTrack.album.name,
-		releaseDate: playlistTrack.album.release_date,
-		releaseDatePrecision: playlistTrack.album.release_date_precision as ReleaseDatePrecisionZ,
-		uri: playlistTrack.album.uri
-	}
-
-	const albumInsert = db.insert(albums)
-		.values(albumData)
 		.onConflictDoNothing();
 
 	const artistInsert = Promise.all(playlistTrack.artists.map(async (artist) => {
@@ -157,10 +172,16 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 			uri: artist.uri,
 		}
 
-		return db.insert(artists)
+		await db.insert(artists)
 			.values(artistData)
 			.onConflictDoNothing();
-	}))
 
-	return Promise.all([trackInsert, albumInsert, artistInsert])
+		return db.insert(artistsToAlbums)
+			.values({ artistId: artistData.id, albumId: albumData.id })
+			.onConflictDoNothing();
+	}));
+
+	
+
+	return Promise.all([trackInsert, artistInsert])
 }
