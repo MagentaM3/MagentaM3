@@ -1,22 +1,12 @@
-import z from 'zod';
-import { db } from '../db/connection';
-import { users } from '../db/schema/user';
 import { syncSpotifyData } from '../services/spotify';
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
-import { User } from '../types/user';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const userRouter = createTRPCRouter({
-	// TODO: update or remove following route
-  user: publicProcedure
-    .input(z.void())
-    .output(User)
-    .query(async () => {
-			const result = await db.select().from(users);
-      return result[0];
-    }),
+	// TODO: fix "TRPCClientError: The app has exceeded its rate limits." when 
+	// sync is pressed in rapid succession
 	syncSpotifyData: protectedProcedure
-		.mutation(({ ctx }) => {
+		.mutation(async ({ ctx }) => {
 			// use your ORM of choice
-			syncSpotifyData(ctx.session.accessToken);
+			await syncSpotifyData(ctx.session.accessToken);
 		}),
 });

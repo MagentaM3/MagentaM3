@@ -1,17 +1,16 @@
 import { relations } from "drizzle-orm";
-import { pgTable, serial, text, integer } from "drizzle-orm/pg-core";
-import { users } from "./user";
-import { playlists } from "./playlist";
+import { integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
 import { albums } from "./album";
+import { playlists } from "./playlist";
+import { users } from "./user";
 
 export const images = pgTable("images", {
-  id: serial("id").primaryKey(),
-  url: text("link"),
+  url: text("link").primaryKey(),
   height: integer("height"),
   width: integer("width"),
-  userId: integer("user_id").references(() => users.id, {onDelete: 'cascade'}),
-  albumId: integer("album_id").references(() => albums.id, {onDelete: 'cascade'}),
-  playlistId: integer("playlist_id").references(() => playlists.id, {onDelete: 'cascade'}),
+  userId: varchar("user_id").references(() => users.id, {onDelete: 'cascade'}),
+  albumId: varchar("album_id").references(() => albums.id, {onDelete: 'cascade'}),
+  playlistId: varchar("playlist_id").references(() => playlists.id, {onDelete: 'cascade'}),
 });
 
 export const imageRelations = relations(images, ({ one }) => ({

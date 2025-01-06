@@ -1,38 +1,16 @@
 import { columns, PlaylistTrack } from '@/components/playlist/columns';
 import { DataTable } from '@/components/playlist/data-table';
+import { Button } from '@/components/ui/button';
+import { ButtonLoading } from '@/components/ui/button-loading';
 import { trpc } from '@/utils/trpc';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-function getData(playlistId: string): PlaylistTrack[] {
-	console.log(playlistId)
+function getData(): PlaylistTrack[] {
 	// Fetch data from your API here.
 	return [
 		{
-			id: '827',
-			title: 'Harmony',
-			album: 'Voyage',
-			artist: ['Tame Impala', 'The Weeknd'],
-			duration: 123456,
-			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f',
-		},
-		{
-			id: '539',
-			title: 'Testing',
-			album: 'Chords',
-			artist: ['Alice', 'Bob', 'Charlie'],
-			duration: 210478,
-			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f',
-		},
-		{
-			id: '194',
-			title: 'Echoes',
-			album: 'Rhythm',
-			artist: ['Dua Lipa', 'Elton John'],
-			duration: 152394,
-			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f',
-		},
-		{
-			id: '438',
+			id: '123',
 			title: 'Settle',
 			album: 'Testing',
 			artist: ['BAYNK', 'Sinéad Harnett'],
@@ -109,13 +87,26 @@ function getData(playlistId: string): PlaylistTrack[] {
 
 const PlaylistPage = () => {
 	const { playlistId } = useParams();
-	trpc.user.user.useQuery();
-	const data = getData(playlistId ?? "");
+	const data = getData();
+	const syncMutation = trpc.user.syncSpotifyData.useMutation({
+		onSuccess: () => {
+			setLoading(false);
+		}
+	});
+
+	const [loading, setLoading] = useState(false);
+
+	const handleClick = () => {
+		setLoading(true);
+		syncMutation.mutate();
+	}
 
 	return (
 		<>
 			<div className="container mx-auto py-10">
 				<DataTable columns={columns} data={data} />
+				<br />
+				{loading ? <ButtonLoading>Syncing</ButtonLoading> : <Button onClick={handleClick}>Sync Spotify</Button>}
 			</div>
 		</>
 	)
