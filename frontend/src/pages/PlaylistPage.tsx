@@ -1,9 +1,9 @@
+import CouldNotFetchImage from '@/assets/illustrations/CouldNotFetchImage';
+import { Loader } from '@/components/loader/loader';
 import { columns, PlaylistTrack } from '@/components/playlist/columns';
 import { DataTable } from '@/components/playlist/data-table';
-import { Button } from '@/components/ui/button';
-import { ButtonLoading } from '@/components/ui/button-loading';
 import { trpc } from '@/utils/trpc';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 function getData(): PlaylistTrack[] {
@@ -22,27 +22,38 @@ function getData(): PlaylistTrack[] {
 }
  
 const PlaylistPage = () => {
-	const { playlistId } = useParams();
-  const data = getData();
+
+	// Initial Sync
+	const [ syncing, setSyncing ] = useState(true);
+	const [ error, setError ] = useState(false);
+
 	const syncMutation = trpc.user.syncSpotifyData.useMutation({
-    onSuccess: () => {
-      setLoading(false);
-    }
+		onError: () => {
+			setError(true);
+		},
+		onSettled: () => {
+			setSyncing(false);
+		}
   });
 
-	const [loading, setLoading] = useState(false);
-
-	const handleClick = () => {
-		setLoading(true);
+	useEffect(() => {
 		syncMutation.mutate();
-	}
+	}, []);
+		
+	const { playlistId } = useParams();
+  const data = getData();
+	const profileQuery = trpc.user.getProfile.useQuery();
+
+	if (syncing || syncMutation.isLoading || profileQuery.isLoading) return <Loader />;
+	
+	// TODO: improve fallback content and loader
+	const profileData = profileQuery.data;
+	if (error || !profileData) return <CouldNotFetchImage />; 
 
   return (
 		<>
 			<div className="container mx-auto py-10">
 				<DataTable columns={columns} data={data} />
-				<br/>
-				{loading ? <ButtonLoading>Syncing</ButtonLoading> : <Button onClick={handleClick}>Sync Spotify</Button>}
 			</div>
 		</>
   )
