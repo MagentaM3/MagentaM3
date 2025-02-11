@@ -13,7 +13,6 @@ const LandingPage = () => {
 			response_type: 'code',
 			scope: scope,
 		}
-
 		authUrl.search = new URLSearchParams(params).toString();
 		window.open(authUrl.toString());
 	}
