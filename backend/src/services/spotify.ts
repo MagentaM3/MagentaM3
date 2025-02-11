@@ -22,6 +22,14 @@ const LM = new LogModule('SEEDER');
 export const getSpotifyApi = (accessToken: AccessToken): SpotifyApi =>
 	SpotifyApi.withAccessToken(clientId, accessToken);
 
+export const getUserId = async (accessToken: AccessToken) => {
+	const spotifyApi = getSpotifyApi(accessToken);
+	const profile = await spotifyApi.currentUser.profile();
+	Logger.Info(LM, `Retrieved Spotify user id`);
+	return profile.id;
+}
+
+
 export const syncSpotifyData = async (accessToken: AccessToken) => {
 	Logger.Info(LM, `Spotify data sync started`);
 	await syncUserProfile(accessToken);
