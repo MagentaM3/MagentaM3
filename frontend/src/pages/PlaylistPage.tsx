@@ -8,6 +8,8 @@ import { useParams } from 'react-router-dom';
 
 function getData(): PlaylistTrack[] {
 	// Fetch data from your API here.
+
+	// Given the playlist id, find all tracks inside
 	return [
 		{
 			id: '123',
@@ -71,6 +73,22 @@ function getData(): PlaylistTrack[] {
 			album: 'Voyage',
 			artist: ['Alice', 'Bob', 'Charlie'],
 			duration: 195438,
+			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f',
+		},
+		{
+			id: '689',
+			title: 'Settle',
+			album: 'Harmony',
+			artist: ['Tame Impala', 'The Weeknd'],
+			duration: 259864,
+			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f',
+		},
+		{
+			id: '689',
+			title: 'Settle',
+			album: 'Harmony',
+			artist: ['Tame Impala', 'The Weeknd'],
+			duration: 259864,
 			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f',
 		},
 		{
