@@ -34,15 +34,15 @@ export const syncUserProfile = async (accessToken: AccessToken) => {
 	const profile = await spotifyApi.currentUser.profile();
 	Logger.Info(LM, `Syncing data for user ${profile.display_name}`);
 	const data = {
-		displayName: profile.display_name,  
+		displayName: profile.display_name,
 		country: profile.country,
 		email: profile.email,
 		uri: profile.uri
 	}
 
 	await db.insert(users)
-		.values({ 
-			id: profile.id, 
+		.values({
+			id: profile.id,
 			...data
 		})
 		.onConflictDoUpdate({
@@ -70,7 +70,7 @@ export const syncUserPlaylists = async (accessToken: AccessToken) => {
 }
 
 export const syncPlaylist = async (accessToken: AccessToken, playlistId: string) => {
-	
+
 	const spotifyApi = getSpotifyApi(accessToken);
 
 	const playlist = await spotifyApi.playlists.getPlaylist(playlistId);
@@ -94,15 +94,15 @@ export const syncPlaylist = async (accessToken: AccessToken, playlistId: string)
 	}
 
 	await db.insert(playlists)
-		.values({ 
-			id: playlist.id, 
+		.values({
+			id: playlist.id,
 			...data
 		})
 		.onConflictDoUpdate({
 			target: users.id,
 			set: data,
 		});
-	
+
 	await Promise.all(playlist.images.map(async (image) => {
 		return db.insert(images)
 			.values({
@@ -131,22 +131,22 @@ const syncPlaylistItems = async (accessToken: AccessToken, playlistId: string, o
 		// TODO: handle local files and episode
 		.filter(item => item && item.track && !item.is_local && item.track.type == 'track')
 		.map(async item => {
-		const data = {
-			id: v4(),
-			addedAt: item.added_at,
-			addedById: item.added_by.id,
-			trackId: item.track.id,
-			playlistId: playlistId
-		}
+			const data = {
+				id: v4(),
+				addedAt: item.added_at,
+				addedById: item.added_by.id,
+				trackId: item.track.id,
+				playlistId: playlistId
+			}
 
-		await syncPlaylistTrack(item.track)
+			await syncPlaylistTrack(item.track)
 
-		// TODO: only uses the fields of the PlaylistedTrack i.e. doesn't make any
-		// additional calls to Spotify
-		return db
-			.insert(playlistTracks)
-			.values(data);
-	}))
+			// TODO: only uses the fields of the PlaylistedTrack i.e. doesn't make any
+			// additional calls to Spotify
+			return db
+				.insert(playlistTracks)
+				.values(data);
+		}))
 }
 
 const syncPlaylistTrack = async (playlistTrack: Track) => {
@@ -191,7 +191,7 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 		trackNumber: playlistTrack.track_number,
 		uri: playlistTrack.uri
 	}
-	
+
 	const trackInsert = db.insert(tracks)
 		.values(trackData)
 		.onConflictDoNothing();
@@ -223,4 +223,13 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 	}));
 
 	return Promise.all([trackToArtistInsert, artistToAlbumInsert]);
+}
+
+export const getUserPlaylists = async () => {
+	const allImages = await db.select().from(playlists);
+	const allPlaylists = db.select().from(playlists).innerJoin(images, eq(playlists.id, images.playlistId)).where(eq(images.width, 640));
+	// console.log({ allUsers });
+	console.log({ allImages })
+
+	return allPlaylists
 }
