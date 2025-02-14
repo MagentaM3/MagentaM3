@@ -1,45 +1,56 @@
+// import CouldNotFetchImage from '@/assets/illustrations/CouldNotFetchImage';
+// import { Loader } from '@/components/loader/loader';
 import { Card, CardContent } from "@/components/ui/card";
 import {
 	Carousel,
+	CarouselApi,
 	CarouselContent,
 	CarouselItem,
 	CarouselNext,
-	CarouselPrevious,
-	type CarouselApi
+	CarouselPrevious
 } from "@/components/ui/carousel";
-import { queryAPI } from "@/lib/utils";
+import { trpc } from "@/utils/trpc";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PlaylistsPage = () => {
 	const navigate = useNavigate();
 
+	// Initial Sync
+	// const [syncing, setSyncing] = useState(true);
+	// const [error, setError] = useState(false);
+
 	const [api, setApi] = useState<CarouselApi>()
-	// Change TYPE
-	const [playlists, setPlaylists] = useState<Array<CarouselPlaylist>>([]);
 	const [current, setCurrent] = useState(0)
 	const [count, setCount] = useState(0)
 
-	const fetchPlaylists = async () => {
-		const data = await queryAPI('GET', '/playlists');
-		console.log(data)
-		const newPlaylist = data.map((playlist: PlaylistImg) => (
-			{
-				id: playlist.playlists.id,
-				name: playlist.playlists.name,
-				url: playlist.images.url,
-			}
-		))
-		setPlaylists(newPlaylist);
-	}
+	// const syncMutation = trpc.user.syncSpotifyData.useMutation({
+	// 	onError: () => {
+	// 		setError(true);
+	// 	},
+	// 	onSettled: () => {
+	// 		setSyncing(false);
+	// 	}
+	// });
+
+	// useEffect(() => {
+	// 	syncMutation.mutate();
+	// }, []);
+
+
+	// const profileQuery = trpc.user.getProfile.useQuery();
+
+	// if (syncing || syncMutation.isLoading || profileQuery.isLoading) return <Loader />;
+
+	// // TODO: improve fallback content and loader
+	// const profileData = profileQuery.data;
+	// if (error || !profileData) return <CouldNotFetchImage />;
+
 
 	useEffect(() => {
 		if (!api) {
 			return
 		}
-
-		fetchPlaylists();
-		console.log(playlists);
 
 		setCount(api.scrollSnapList().length)
 		setCurrent(api.selectedScrollSnap() + 1)
@@ -47,7 +58,9 @@ const PlaylistsPage = () => {
 		api.on("select", () => {
 			setCurrent(api.selectedScrollSnap() + 1)
 		})
-	}, [api])
+	}, [])
+
+	const userPlaylists = trpc.playlist.getPlaylists.useQuery()
 
 	return (
 		<>
@@ -55,29 +68,28 @@ const PlaylistsPage = () => {
 			<div className="mx-auto max-w-xs grid content-center min-h-screen">
 
 				<Carousel
-					setApi={setApi}
+					// setApi={setApi}
 					opts={{
 						align: "start",
 						loop: true,
 					}}
 					className="w-full max-w-xs">
 					<CarouselContent className="-ml-1">
-						{playlists.length !== 0
-							?
-							playlists.map((playlist, index) => (
+						{
+							userPlaylists.data?.map((playlist, index) => (
 								<CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
 									<div className="p-1">
-										<img src={playlist.url} onClick={() => { navigate('/playlist') }}></img>
+										<img src={playlist.url} onClick={() => { navigate('/playlist', { state: { playlistId: playlist.id } }) }}></img>
 									</div>
 									<div className="py-2 text-center text-sm text-muted-foreground">
 										{playlist.name}
 									</div>
 								</CarouselItem>
 							))
-							:
-							<CarouselItem className="md:basis-1/2 lg:basis-1/3">
-								<span>You have no playlists available</span>
-							</CarouselItem>
+							// :
+							// <CarouselItem className="md:basis-1/2 lg:basis-1/3">
+							// 	<span>You have no playlists available</span>
+							// </CarouselItem>
 						}
 					</CarouselContent>
 

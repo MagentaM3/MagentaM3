@@ -10,7 +10,6 @@ import { seedDB } from './db/seed';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 import { appRouter } from './routers/_app';
-import { getUserPlaylists } from './services/spotify';
 import { createContext } from './trpc';
 
 const clientId: string = env.SPOTIFY_CLIENT_ID;
@@ -72,12 +71,7 @@ app.get('/callback', (req: Request, res: Response) => {
 
 
 // Create new routes
-app.get('/playlists', async (req: Request, res: Response) => {
 
-  const data = await getUserPlaylists();
-
-  res.json(data);
-});
 
 app.use(express.json({ limit: '50mb' }));
 app.use(

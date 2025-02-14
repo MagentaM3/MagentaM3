@@ -232,12 +232,3 @@ const syncPlaylistTrack = async (playlistTrack: Track) => {
 
 	return Promise.all([trackToArtistInsert, artistToAlbumInsert]);
 }
-
-export const getUserPlaylists = async () => {
-	const allImages = await db.select().from(playlists);
-	const allPlaylists = db.select().from(playlists).innerJoin(images, eq(playlists.id, images.playlistId)).where(eq(images.width, 640));
-	// console.log({ allUsers });
-	console.log({ allImages })
-
-	return allPlaylists
-}
