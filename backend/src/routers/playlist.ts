@@ -1,5 +1,5 @@
+import { getUserPlaylists } from '../services/playlist';
 import { getUserId } from '../services/spotify';
-import { getUserPlaylists } from '../services/user';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
 export const playlistRouter = createTRPCRouter({

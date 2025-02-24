@@ -9,7 +9,7 @@ export const router = createBrowserRouter(
     <>
       <Route path="/" element={<LandingPage />} />
       <Route path="/playlists/" element={<PlaylistsPage />} />
-      <Route path="/playlist/" element={<PlaylistPage />} />
+      <Route path="/playlist/:playlistId" element={<PlaylistPage />} />
     </>
   )
 );
