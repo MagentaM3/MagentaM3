@@ -1,11 +1,12 @@
 // track.ts
 import { z } from 'zod';
-import { Album } from './album.ts';
-import { Artist } from './artist.ts';
+import { Album } from './album';
+import { Artist } from './artist';
+import { Image } from './image';
 
 // Info for the given track 
 export const Track = z.object({
-    id: z.number(),
+    id: z.string(),
     album: Album,
     artists: z.array(Artist),
     durationMs: z.number(),
@@ -13,9 +14,10 @@ export const Track = z.object({
     explicit: z.boolean(),
     name: z.string(),
     popularity: z.number().int().min(0).max(100),
-    previewUrl: z.string(),
+    previewUrl: z.string().nullable(),
     trackNumber: z.number(),
     uri: z.string(),
+    images: z.array(Image),
 });
 
 export type TrackZ = z.input<typeof Track>;

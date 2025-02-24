@@ -5,12 +5,12 @@ import { images } from "./images";
 
 export const albums = pgTable("albums", {
   id: varchar("id", { length: 36 }).primaryKey(),
-  albumType: varchar("album_type", { enum: ["album", "single", "compilation"] }),
-  totalTracks: integer("total_tracks"),
-  name: varchar("name", { length: 256 }),
-  releaseDate: timestamp("release_date", { mode: 'string' }),
-  releaseDatePrecision: varchar("release_date_precision", { enum: ["year", "month", "day"] }),
-  uri: text("link"),
+  albumType: varchar("album_type", { enum: ["album", "single", "compilation"] }).notNull(),
+  totalTracks: integer("total_tracks").notNull(),
+  name: varchar("name", { length: 256 }).notNull(),
+  releaseDate: timestamp("release_date", { mode: 'string' }).notNull(),
+  releaseDatePrecision: varchar("release_date_precision", { enum: ["year", "month", "day"] }).notNull(),
+  uri: text("link").notNull(),
 });
 
 export const albumsRelations = relations(albums, ({ many }) => ({

@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { Image } from './image.ts';
+import { Image } from './image';
 
 export const AlbumType = z.enum(["album", "single", "compilation"])
 export const ReleaseDatePrecision = z.enum(["year", "month", "day"])
 
 export const Album = z.object({
-    id: z.number(),
+    id: z.string(),
     albumType: AlbumType,
     totalTracks: z.number(),
     images: z.array(Image),

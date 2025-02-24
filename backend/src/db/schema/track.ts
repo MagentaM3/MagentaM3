@@ -5,15 +5,15 @@ import { artists } from "./artist";
 
 export const tracks = pgTable("tracks", {
   id: varchar("id", { length: 36 }).primaryKey(),
-  albumId: varchar("album_id").references(() => albums.id),
-  durationMs: integer("duration_ms"),
-  discNumber: integer("disc_number"),
-  explict: boolean("explicit"),
-  name: varchar("name", { length: 256 }),
-  popularity: integer("popularity"),
+  albumId: varchar("album_id").references(() => albums.id).notNull(),
+  durationMs: integer("duration_ms").notNull(),
+  discNumber: integer("disc_number").notNull(),
+  explict: boolean("explicit").notNull(),
+  name: varchar("name", { length: 256 }).notNull(),
+  popularity: integer("popularity").notNull(),
   previewUrl: text("preview_url"),
-  trackNumber: integer("track_number"),
-  uri: text("link"),
+  trackNumber: integer("track_number").notNull(),
+  uri: text("link").notNull(),
 });
 
 export const tracksRelations = relations(tracks, ({ one, many }) => ({
@@ -35,7 +35,7 @@ export const tracksToArtists = pgTable(
       .references(() => artists.id)
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.artistId, t.trackId]})
+    pk: primaryKey({ columns: [t.artistId, t.trackId] })
   }),
 );
 

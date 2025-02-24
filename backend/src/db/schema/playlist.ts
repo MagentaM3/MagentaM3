@@ -6,9 +6,9 @@ import { users } from "./user";
 
 export const playlists = pgTable("playlists", {
   id: varchar("id", { length: 36 }).primaryKey(),
-  collaborative: boolean("collaborative"),
+  collaborative: boolean("collaborative").notNull(),
   description: text("description"),
-  name: varchar("name", { length: 256 }),
+  name: varchar("name", { length: 256 }).notNull(),
   ownerId: varchar("owner_id").notNull().references(() => users.id),
   snapshotId: text("snapshot_id"),
   uri: text("link")
@@ -17,7 +17,7 @@ export const playlists = pgTable("playlists", {
 export const playlistsRelations = relations(playlists, ({ one, many }) => ({
   owner: one(users, {
     fields: [playlists.ownerId],
-    references: [users.id], 
+    references: [users.id],
   }),
   images: many(images),
   tracks: many(playlistTracks),

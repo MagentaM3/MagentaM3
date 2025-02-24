@@ -6,7 +6,6 @@ import express, { Request, Response } from 'express';
 import session from 'express-session';
 import request from 'request';
 import { renderTrpcPanel } from 'trpc-panel';
-import { seedDB } from './db/seed';
 import { env } from './env';
 import { LogModule, Logger } from './logging';
 import { appRouter } from './routers/_app';
@@ -95,5 +94,5 @@ app.use('/panel', (_, res) => {
 
 app.listen(port, async () => {
   Logger.Info(new LogModule('INDEX'), `Server is running on PORT=${port}`);
-  await seedDB();
+  // await seedDB();
 });
