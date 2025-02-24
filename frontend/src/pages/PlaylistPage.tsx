@@ -9,6 +9,14 @@ function getData(): PlaylistTrack[] {
 	// Fetch data from your API here.
 	return [
 		{
+			id: '456',
+			title: 'Mona Lisa',
+			album: 'Sunburn',
+			artist: ['Dominic Fike'],
+			duration: 1222,
+			image: 'https://i.scdn.co/image/ab67616d0000b2730fb08616c78d44ceb4c8d061'
+		},
+		{
 			id: '123',
 			title: 'Settle',
 			album: 'Settle',
@@ -16,7 +24,14 @@ function getData(): PlaylistTrack[] {
 			duration: 205128,
 			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f'
 		},
-		// ...
+		{
+			id: '789',
+			title: 'Magnolia',
+			album: 'The Positions',
+			artist: ['Gang of Youths'],
+			duration: 8890,
+			image: 'https://i.scdn.co/image/ab67616d0000b2732653cc7e2e660da03569207c'
+		},
 	]
 }
 
