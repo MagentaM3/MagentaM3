@@ -16,7 +16,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -41,13 +41,9 @@ export function DataTable<TData, TValue>({
     },
   })
 
-	useEffect(() => {
-		console
-	}, [sorting]);
-
   return (
     <div className="rounded-md border">
-      <Table>
+      <Table className="w-fit min-w-[50%]">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -65,6 +61,7 @@ export function DataTable<TData, TValue>({
               })}
             </TableRow>
           ))}
+
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
@@ -74,7 +71,7 @@ export function DataTable<TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="px-7">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -82,7 +79,7 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className="h-24 text-center px-2">
                 No results.
               </TableCell>
             </TableRow>

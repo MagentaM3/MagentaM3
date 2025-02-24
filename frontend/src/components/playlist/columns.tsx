@@ -1,7 +1,8 @@
 import { Header } from "@/components/playlist/header";
 import { PlaylistTrack } from "@/types/track";
 import { ColumnDef } from "@tanstack/react-table";
-import { Clock9 } from "lucide-react";
+import { Clock9, Ellipsis } from "lucide-react";
+import { Button } from "../ui/button";
  
 export const columns: ColumnDef<PlaylistTrack>[] = [
 	{
@@ -21,7 +22,7 @@ export const columns: ColumnDef<PlaylistTrack>[] = [
   {
     accessorKey: "album",
     header: ({ column }) => (
-			<Header column={column} sortable>
+			<Header column={column}>
 				Album
 			</Header>
 		),
@@ -29,7 +30,7 @@ export const columns: ColumnDef<PlaylistTrack>[] = [
 	{
     accessorKey: "artist",
     header: ({ column }) => (
-			<Header column={column} sortable>
+			<Header column={column}>
 				Artist(s)
 			</Header>
 		),
@@ -41,8 +42,8 @@ export const columns: ColumnDef<PlaylistTrack>[] = [
 	{
     accessorKey: "duration",
     header: ({ column }) => (
-			<Header column={column} sortable>
-				< Clock9 className="ml-auto"/>
+			<Header column={column}>
+				<Clock9 className="ml-auto"/>
 			</Header>
 		),
 		cell: ({ row }) => {
@@ -51,7 +52,20 @@ export const columns: ColumnDef<PlaylistTrack>[] = [
 			const minutes = Math.floor(duration / 60 / 1000);
 			const seconds = Math.floor(duration / 1000 % 60);
  
-      return <div className="font-medium text-right">{minutes}:{seconds}</div>
+      return <div className="font-medium text-left">{minutes}:{seconds}</div>
     },
   },
+	{
+		id: 'properties',
+    header: () => (
+			<Button
+				variant="ghost"
+				size="sm"
+				className="h-8 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+			>
+				<Ellipsis />
+			</Button>
+		)
+	}
+
 ]

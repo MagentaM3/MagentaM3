@@ -18,46 +18,23 @@ interface HeaderProps {
 }
 
 export const Header = ({ column, children }: HeaderProps) => {
-
-	// return  (
-	// 	<Button
-	// 		className="w-full"
-	// 		variant="ghost"
-	// 		onClick={() => {
-	// 			column.toggleSorting()
-	// 		}}
-	// 	>
-	// 		{ children }
-
-	// 		{/* <div className="flex justify-between w-full gap-2">
-	// 		{ children }
-	// 		{ column.getIsSorted() === "desc" ? (
-	// 			<ArrowDown />
-	// 			) : column.getIsSorted() === "asc" ? (
-	// 				<ArrowUp />
-	// 			) : (
-	// 				<ChevronsUpDown />
-	// 			)} */}
-	// 		</div>
-	// 	</Button>
-	// )
 	return (
-		<div className="flex items-center space-x-2">
+		<div className="flex items-center space-x-2 w-full">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
-            className="-ml-3 h-8 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+            className="h-8 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground flex justify-between w-full px-2 gap-4"
           >
-            <span>{ children }</span>
-            {column.getIsSorted() === "desc" ? (
-              <ArrowDown />
-            ) : column.getIsSorted() === "asc" ? (
-              <ArrowUp />
-            ) : (
-              <ChevronsUpDown />
-            )}
+            <span className="px-1">{ children }</span>
+						{column.getIsSorted() === "desc" ? (
+							<ArrowDown />
+						) : column.getIsSorted() === "asc" ? (
+							<ArrowUp />
+						) : (
+							<ChevronsUpDown />
+						)}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">

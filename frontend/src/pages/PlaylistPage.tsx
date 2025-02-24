@@ -20,7 +20,7 @@ function getData(): PlaylistTrack[] {
 			id: '123',
 			title: 'Settle',
 			album: 'Settle',
-			artist: ['BAYNK', 'Sinéad Harnett'],
+			artist: ['BAYNK', 'Sinéad Harnett', 'BAYNK', 'Sinéad Harnett' ,'BAYNK', 'Sinéad Harnett','BAYNK', 'Sinéad Harnett','BAYNK', 'Sinéad Harnett','BAYNK', 'Sinéad Harnett'],
 			duration: 205128,
 			image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f'
 		},
