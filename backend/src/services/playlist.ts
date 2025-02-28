@@ -1,11 +1,13 @@
 import { eq, isNull, sql } from 'drizzle-orm';
 import { db } from "../db/connection";
 import { albums } from '../db/schema/album';
+import { artists } from '../db/schema/artist';
 import { images } from '../db/schema/images';
 import { playlists } from '../db/schema/playlist';
 import { playlistTracks } from '../db/schema/playlistTrack';
 import { tracks, tracksToArtists } from '../db/schema/track';
 import { AlbumZ } from '../types/album';
+import { ArtistZ } from '../types/artist';
 import { ImageZ } from '../types/image';
 import { PlaylistZ } from "../types/playlist";
 import { PlaylistTrackZ } from '../types/playlistTrack';
@@ -94,7 +96,7 @@ export const getTrack = async (trackId: string): Promise<TrackZ> => {
         ...track[0],
         album: await getAlbum(track[0].albumId),
         // TODO!
-        artists: [],
+        artists: await getArtists(track[0].id),
         images: await getImages(track[0].albumId)
     }
     // console.log("A")
@@ -137,99 +139,15 @@ export const getImages = async (albumId: string): Promise<ImageZ[]> => {
     return image
 }
 
-// export const getArtists = async (trackId: string): Promise<ArtistZ> => {
-//     const track = await db
-//         .select({
-//             id: tracks.id,
-//             albumId: tracks.albumId,
-//             durationMs: tracks.durationMs,
-//             discNumber: tracks.discNumber,
-//             explicit: tracks.explict,
-//             // artists: sql`array_agg(${tracksToArtists.artistId})`.as('artists'),
-//             name: tracks.name,
-//             popularity: tracks.popularity,
-//             previewUrl: tracks.previewUrl,
-//             trackNumber: tracks.trackNumber,
-//             uri: tracks.uri,
-//         })
-//         .from(tracks)
-//         .innerJoin(tracksToArtists, eq(tracksToArtists.trackId, tracks.id))
-//         .where(eq(tracks.id, trackId))
-
-//     return {
-//         ...track[0],
-//         album: await getAlbum(track[0].albumId),
-//         // TODO!
-//         artists: [],
-//         images: []
-//     }
-// }
-
-
-
-
-
-
-
-// id: tracks.id,
-//                 album: tracks.albumId,
-//                 artists: z.array(Artist),
-//                 durationMs: z.number(),
-//                 discNumber: z.number(),
-//                 explicit: z.boolean(),
-//                 name: z.string(),
-//                 popularity: z.number().int().min(0).max(100),
-//                 previewUrl: z.string(),
-//                 trackNumber: z.number(),
-//                 uri: z.string(),
-//                 images: z.array(Image),
-//                 //             }
-
-// const allTracks = await db
-//         .select({
-//             id: playlistTracks.id,
-//             addedAt: playlistTracks.addedAt,
-//             addedBy: playlistTracks.addedById,
-//             // title: tracks.name,
-//             // album: albums.id,
-//             // artist: sql`array_agg(${tracksToArtists.artistId})`.as('artists'),
-//             // duration: tracks.durationMs,
-//             // image: images.albumId,
-//             track: { 
-//                 id: tracks.id,
-//                 album: tracks.albumId,
-//                 artists: z.array(Artist),
-//                 durationMs: z.number(),
-//                 discNumber: z.number(),
-//                 explicit: z.boolean(),
-//                 name: z.string(),
-//                 popularity: z.number().int().min(0).max(100),
-//                 previewUrl: z.string(),
-//                 trackNumber: z.number(),
-//                 uri: z.string(),
-//                 images: z.array(Image),
-//             }
-//         })
-//         .from(tracks)
-//         .innerJoin(playlistTracks, eq(playlistTracks.trackId, tracks.id))
-//         .innerJoin(tracksToArtists, eq(tracksToArtists.trackId, tracks.id))
-//         .innerJoin(albums, eq(albums.id, tracks.albumId))
-//         .innerJoin(images, eq(images.albumId, tracks.albumId))
-//         .where(eq(playlistTracks.playlistId, playlistId))
-//         .groupBy(tracks.id, albums.id, tracks.name, tracks.durationMs, images.albumId);
-
-
-//     return {
-//         ...playlist[0], tracks: allTracks, images: []
-//     }
-
-
-// id: z.number(),
-// collaborative: z.boolean(),
-// description: z.string(),
-// images: z.array(Image),
-// name: z.string(),
-// owner: User,
-// tracks: z.array(PlaylistTrack),
-// snapshotId: z.string(),
-// uri: z.string()
+export const getArtists = async (trackId: string): Promise<ArtistZ[]> => {
+    const artist = await db
+        .select({
+            id: artists.id,
+            name: artists.name,
+            uri: artists.uri,
+        })
+        .from(artists)
+        .innerJoin(tracksToArtists, eq(artists.id, tracksToArtists.artistId))
+        .where(eq(tracksToArtists.trackId, trackId))
+    return artist
+}
