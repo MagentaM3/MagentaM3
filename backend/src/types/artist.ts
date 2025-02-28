@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const Artist = z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
     uri: z.string(),
 });
