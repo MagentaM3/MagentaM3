@@ -8,9 +8,9 @@ export const images = pgTable("images", {
   url: text("link").primaryKey(),
   height: integer("height"),
   width: integer("width"),
-  userId: varchar("user_id").references(() => users.id, {onDelete: 'cascade'}),
-  albumId: varchar("album_id").references(() => albums.id, {onDelete: 'cascade'}),
-  playlistId: varchar("playlist_id").references(() => playlists.id, {onDelete: 'cascade'}),
+  userId: varchar("user_id").references(() => users.id, { onDelete: 'cascade' }),
+  albumId: varchar("album_id").references(() => albums.id, { onDelete: 'cascade' }),
+  playlistId: varchar("playlist_id").references(() => playlists.id, { onDelete: 'cascade' }),
 });
 
 export const imageRelations = relations(images, ({ one }) => ({

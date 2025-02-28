@@ -41,7 +41,7 @@ const PlaylistPage = () => {
 	if (profileQuery.isLoading) return <Loader />;
 	const profileData = profileQuery.data;
 	if (!profileData) return <CouldNotFetchImage />;
-
+	// console.log(playlistData.tracks)
 	return (
 		<>
 			<div className="container mx-auto py-10">
@@ -51,7 +51,7 @@ const PlaylistPage = () => {
 					album: track.track.album.name,
 					artist: track.track.artists.map(artist => artist.name),
 					duration: track.track.durationMs,
-					image: 'https://i.scdn.co/image/ab67616d0000b273adf5288a3712aaee4a5b850f'
+					image: track.track.images.length == 0 ? "" : track.track.images[0].url
 				}
 				))} />
 			</div>

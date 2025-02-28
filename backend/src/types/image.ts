@@ -1,10 +1,9 @@
 import { z } from 'zod';
 
 export const Image = z.object({
-    id: z.number(),
     url: z.string(),
-    height: z.number(),
-    width: z.number()
+    height: z.number().nullable(),
+    width: z.number().nullable()
 });
 
 export type ImageZ = z.input<typeof Image>;
