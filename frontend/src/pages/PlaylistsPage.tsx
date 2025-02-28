@@ -38,7 +38,7 @@ const PlaylistsPage = () => {
 
 	const playlistsData = userPlaylists.data;
 	if (error || !playlistsData) return <CouldNotFetchImage />;
-	console.log(playlistsData);
+	// console.log(playlistsData);
 
 	return (
 		<>

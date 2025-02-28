@@ -18,6 +18,9 @@ export const playlistRouter = createTRPCRouter({
 		.output(Playlist)
 		.query(async ({ ctx, input }) => {
 			const userId = await getUserId(ctx.session.accessToken);
-			return await getUserPlaylist(userId, input.playlistId);
+			const res = await getUserPlaylist(userId, input.playlistId);
+			// console.log(res)
+			return res
+
 		}),
 });

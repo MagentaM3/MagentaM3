@@ -6,6 +6,7 @@ import { playlists } from '../db/schema/playlist';
 import { playlistTracks } from '../db/schema/playlistTrack';
 import { tracks, tracksToArtists } from '../db/schema/track';
 import { AlbumZ } from '../types/album';
+import { ImageZ } from '../types/image';
 import { PlaylistZ } from "../types/playlist";
 import { PlaylistTrackZ } from '../types/playlistTrack';
 import { TrackZ } from '../types/track';
@@ -21,7 +22,7 @@ export const getUserPlaylists = async (userId: string) => {
         .innerJoin(images, eq(playlists.id, images.playlistId))
         .where(sql`${userId} = ${playlists.ownerId} and (${images.width} = 640 or ${isNull(images.width)})`)
 
-    console.log(allPlaylists)
+    // console.log(allPlaylists)
     return allPlaylists
 }
 
@@ -89,13 +90,17 @@ export const getTrack = async (trackId: string): Promise<TrackZ> => {
         .innerJoin(tracksToArtists, eq(tracksToArtists.trackId, tracks.id))
         .where(eq(tracks.id, trackId))
 
-    return {
+    const res = {
         ...track[0],
         album: await getAlbum(track[0].albumId),
         // TODO!
         artists: [],
-        images: []
+        images: await getImages(track[0].albumId)
     }
+    // console.log("A")
+    // console.log(res)
+    // console.log("b")
+    return res
 }
 
 export const getAlbum = async (albumId: string): Promise<AlbumZ> => {
@@ -116,9 +121,53 @@ export const getAlbum = async (albumId: string): Promise<AlbumZ> => {
         ...album[0],
         // TODO!
         releaseDate: new Date(album[0].releaseDate),
-        images: []
+        images: await getImages(album[0].id)
     }
 }
+
+export const getImages = async (albumId: string): Promise<ImageZ[]> => {
+    const image = await db
+        .select({
+            url: images.url,
+            height: images.height,
+            width: images.width
+        })
+        .from(images)
+        .where(eq(images.albumId, albumId))
+    return image
+}
+
+// export const getArtists = async (trackId: string): Promise<ArtistZ> => {
+//     const track = await db
+//         .select({
+//             id: tracks.id,
+//             albumId: tracks.albumId,
+//             durationMs: tracks.durationMs,
+//             discNumber: tracks.discNumber,
+//             explicit: tracks.explict,
+//             // artists: sql`array_agg(${tracksToArtists.artistId})`.as('artists'),
+//             name: tracks.name,
+//             popularity: tracks.popularity,
+//             previewUrl: tracks.previewUrl,
+//             trackNumber: tracks.trackNumber,
+//             uri: tracks.uri,
+//         })
+//         .from(tracks)
+//         .innerJoin(tracksToArtists, eq(tracksToArtists.trackId, tracks.id))
+//         .where(eq(tracks.id, trackId))
+
+//     return {
+//         ...track[0],
+//         album: await getAlbum(track[0].albumId),
+//         // TODO!
+//         artists: [],
+//         images: []
+//     }
+// }
+
+
+
+
 
 
 
