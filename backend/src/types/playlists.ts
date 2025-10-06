@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { Image } from './image.ts';
-import { PlaylistTrack } from './playlistTrack.ts';
-import { User } from './user.ts';
+import { Image } from './image';
+import { User } from './user';
+import { PlaylistTrack } from './playlistTrack';
 
 // A collection of playlists
 export const Playlists = z.object({
@@ -13,7 +13,7 @@ export const Playlists = z.object({
     owner: User,
     tracks: z.array(PlaylistTrack),
     // snapshotId: z.string(),
-    uri: z.string()
+    uri: z.string(),
 });
 
 export type PlaylistZ = z.input<typeof Playlists>;

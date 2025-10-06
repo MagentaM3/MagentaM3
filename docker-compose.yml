@@ -5,37 +5,35 @@ services:
       context: ./backend
     restart: always
     ports:
-      - 8080:8080
-    expose:
-      - 8080
+      - "8080:8080"
     volumes:
       - ./backend/src:/app/src
       - ./backend/nodemon.json:/app/nodemon.json
-    links:
-      - db
     depends_on:
       - db
     environment:
-      - NODE_ENV=${NODE_ENV}
-      - SERVER_PORT=${SERVER_PORT}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
-      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
-      - SPOTIFY_REDIRECT_URI=${SPOTIFY_REDIRECT_URI}
+      NODE_ENV: ${NODE_ENV}
+      SERVER_PORT: ${SERVER_PORT}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI}
+
   db:
     image: postgres:14.7-alpine
     restart: always
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
-      - db-data:/postgresql/data
+      - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=mysecretpassword
-      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
 volumes:
-  db-data: {}
+  db-data:

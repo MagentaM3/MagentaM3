@@ -4,7 +4,7 @@ import { Album } from './album';
 import { Artist } from './artist';
 import { Image } from './image';
 
-// Info for the given track 
+// Info for the given track
 export const Track = z.object({
     id: z.string(),
     album: Album,

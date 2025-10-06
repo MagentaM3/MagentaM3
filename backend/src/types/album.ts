@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { Image } from './image';
 
-export const AlbumType = z.enum(["album", "single", "compilation"])
-export const ReleaseDatePrecision = z.enum(["year", "month", "day"])
+export const AlbumType = z.enum(['album', 'single', 'compilation']);
+export const ReleaseDatePrecision = z.enum(['year', 'month', 'day']);
 
 export const Album = z.object({
     id: z.string(),

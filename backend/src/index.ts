@@ -17,82 +17,88 @@ const redirectUri: string = env.SPOTIFY_REDIRECT_URI;
 const port: number = env.SERVER_PORT;
 
 declare module 'express-session' {
-  interface SessionData {
-    accessToken: AccessToken;
-  }
+    interface SessionData {
+        accessToken: AccessToken;
+    }
 }
 
 // TODO: setup nodejs debugging
 const app = express();
 
-app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Set to true if using HTTPS
-}));
+app.use(
+    session({
+        secret: 'your-secret-key',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }, // Set to true if using HTTPS
+    }),
+);
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
-  credentials: true,
-  optionSuccessStatus: 200,
+    origin: 'http://localhost:5173',
+    credentials: true,
+    optionSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
-app.use(express.static(__dirname + '/public'))
-  .use(cookieParser());
+app.use(express.static(__dirname + '/public')).use(cookieParser());
 
 app.get('/callback', (req: Request, res: Response) => {
-  const code = req.query.code || null;
+    const code = req.query.code || null;
 
-  const authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
-      code: code,
-      redirect_uri: redirectUri,
-      grant_type: 'authorization_code'
-    },
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + (Buffer.from(clientId + ':' + clientSecret).toString('base64'))
-    },
-    json: true
-  };
+    const authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        form: {
+            code: code,
+            redirect_uri: redirectUri,
+            grant_type: 'authorization_code',
+        },
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            Authorization:
+                'Basic ' +
+                Buffer.from(clientId + ':' + clientSecret).toString('base64'),
+        },
+        json: true,
+    };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  request.post(authOptions, async (error: any, response: request.Response, body: any) => {
-    if (!error && response.statusCode === 200) {
-      req.session.accessToken = body;
-      res.redirect('http://localhost:5173/playlists');
-    }
-  });
+    request.post(
+        authOptions,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async (error: any, response: request.Response, body: any) => {
+            if (!error && response.statusCode === 200) {
+                req.session.accessToken = body;
+                res.redirect('http://localhost:5173/playlists');
+            }
+        },
+    );
 });
-
 
 // Create new routes
 
-
 app.use(express.json({ limit: '50mb' }));
 app.use(
-  express.urlencoded({
-    limit: '50mb',
-    extended: true,
-  }),
+    express.urlencoded({
+        limit: '50mb',
+        extended: true,
+    }),
 );
 
 app.use(
-  '/trpc',
-  trpcExpress.createExpressMiddleware({
-    router: appRouter,
-    createContext
-  }),
+    '/trpc',
+    trpcExpress.createExpressMiddleware({
+        router: appRouter,
+        createContext,
+    }),
 );
 
 app.use('/panel', (_, res) => {
-  return res.send(renderTrpcPanel(appRouter, { url: 'http://localhost:8080/trpc' }));
+    return res.send(
+        renderTrpcPanel(appRouter, { url: 'http://localhost:8080/trpc' }),
+    );
 });
 
 app.listen(port, async () => {
-  Logger.Info(new LogModule('INDEX'), `Server is running on PORT=${port}`);
-  // await seedDB();
+    Logger.Info(new LogModule('INDEX'), `Server is running on PORT=${port}`);
+    // await seedDB();
 });

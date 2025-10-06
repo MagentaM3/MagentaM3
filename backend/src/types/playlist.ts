@@ -24,7 +24,7 @@ export const SimplifiedPlaylist = z.object({
     images: z.array(Image),
     name: z.string(),
     owner: User,
-    uri: z.string()
+    uri: z.string(),
 });
 
 export type PlaylistZ = z.input<typeof Playlist>;
