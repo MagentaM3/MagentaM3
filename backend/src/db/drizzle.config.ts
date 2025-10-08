@@ -11,7 +11,7 @@ export default defineConfig({
     dbCredentials: {
         user: env.DB_USER,
         password: env.DB_PASSWORD,
-        host: 'localhost',
+        host: env.DB_HOST,
         port: env.DB_PORT,
         database: env.DB_NAME,
         ssl: false,
